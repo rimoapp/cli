@@ -6,6 +6,8 @@
 
 人間と AI エージェント（Claude Code、Codex など）の両方のために作られています。すべてのコマンドはデフォルトで JSON を出力し、`--help` で挙動を確認できるため、スクリプトやエージェントのワークフローにそのまま組み込めます。
 
+> **公式配布リポジトリです。** このリポジトリはリリース済みの `rimo` バイナリとそのドキュメントを提供します。CLI のソースコードはここでは公開していません。バイナリは [Releases](https://github.com/rimoapp/cli/releases) からのみ取得し、公開されている `checksums.txt` で検証してください（[インストール](docs/ja/installation.md) を参照）。
+
 ## インストール
 
 ```bash
@@ -63,6 +65,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 - [コマンド](docs/ja/commands.md) — フラグと例を含む完全なリファレンス
 - [設定](docs/ja/configuration.md) — `config.yaml`、認証情報の保存、環境変数
 - [出力とエラー](docs/ja/output-and-errors.md) — JSON 設計、`--fields`/`--excludes`、終了コード
+- [トラブルシューティング](docs/ja/troubleshooting.md) — インストール・ログイン・PATH のよくある問題
 
 ## AI エージェント
 
@@ -71,3 +74,11 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 ## サポート
 
 バグの発見や機能のリクエストがありますか？このリポジトリで issue を作成してください。
+
+## セキュリティ
+
+脆弱性の報告については [セキュリティポリシー](SECURITY.md) を参照してください。セキュリティに関する報告は公開 issue では行わないでください。
+
+## ライセンス
+
+本プロジェクトはオープンソースではありません。Rimo CLI の利用は [Rimo 利用規約](https://rimo.app/terms) に従います。[NOTICE](NOTICE.md) を参照してください。

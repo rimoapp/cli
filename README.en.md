@@ -6,6 +6,8 @@
 
 Built for both humans and AI agents (Claude Code, Codex, etc.): every command speaks JSON by default and exposes its behavior through `--help`, so it slots cleanly into scripts and agent workflows.
 
+> **Official distribution repository.** This repository hosts the released `rimo` binaries and their documentation; the CLI's source code is not published here. Download binaries only from [Releases](https://github.com/rimoapp/cli/releases) and verify them against the published `checksums.txt` (see [Installation](docs/en/installation.md)).
+
 ## Install
 
 ```bash
@@ -63,6 +65,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 - [Commands](docs/en/commands.md) — full reference with flags and examples
 - [Configuration](docs/en/configuration.md) — `config.yaml`, credential storage, environment variables
 - [Output & errors](docs/en/output-and-errors.md) — JSON design, `--fields`/`--excludes`, exit codes
+- [Troubleshooting](docs/en/troubleshooting.md) — common install, login, and PATH issues
 
 ## AI agents
 
@@ -71,3 +74,11 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 ## Support
 
 Found a bug or have a feature request? Open an issue in this repository.
+
+## Security
+
+To report a security vulnerability, see our [Security Policy](SECURITY.md) — please do not open a public issue for security reports.
+
+## License
+
+This is not an open-source project. Use of the Rimo CLI is governed by the [Rimo Terms of Service](https://rimo.app/terms); see [NOTICE](NOTICE.md).
