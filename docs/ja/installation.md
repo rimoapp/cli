@@ -27,12 +27,11 @@ rimo version
 
 ### インストールオプション
 
-インストールスクリプトは 2 つの環境変数を読み取ります:
+インストールスクリプトは次の環境変数を読み取ります:
 
 | 変数 | 目的 | 例 |
 |----------|---------|---------|
 | `RIMO_INSTALL_DIR` | 別のディレクトリにインストールする | `RIMO_INSTALL_DIR=/usr/local/bin curl -fsSL https://rimo.app/cli/install.sh \| sh` |
-| `RIMO_VERSION` | 最新ではなく特定のバージョンを固定する | `RIMO_VERSION=v1.0.0 curl -fsSL https://rimo.app/cli/install.sh \| sh` |
 
 ## 手動インストール
 

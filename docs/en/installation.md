@@ -27,12 +27,11 @@ rimo version
 
 ### Install options
 
-The install script reads two environment variables:
+The install script reads one environment variable:
 
 | Variable | Purpose | Example |
 |----------|---------|---------|
 | `RIMO_INSTALL_DIR` | Install to a different directory | `RIMO_INSTALL_DIR=/usr/local/bin curl -fsSL https://rimo.app/cli/install.sh \| sh` |
-| `RIMO_VERSION` | Pin a specific version instead of latest | `RIMO_VERSION=v1.0.0 curl -fsSL https://rimo.app/cli/install.sh \| sh` |
 
 ## Manual install
 
