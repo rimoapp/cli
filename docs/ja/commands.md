@@ -430,7 +430,7 @@ rimo version
 **出力（stdout, プレーンテキスト）**
 
 ```
-rimo version v1.0.0 (commit abc1234)
+rimo version v1.0.0
 ```
 
 ---
