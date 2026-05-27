@@ -34,7 +34,6 @@ order.
 |----------|---------|---------|
 | `RIMO_TOKEN` | all commands | API token for headless/CI use. Takes priority over `--account` and `default_account`; used as-is, never refreshed. |
 | `RIMO_INSTALL_DIR` | install script | Directory to install the binary into (default `~/.local/bin`). |
-| `RIMO_VERSION` | install script | Pin a specific version to install instead of latest. |
 | `RIMO_NO_UPDATE_CHECK` | the binary | Set to any non-empty value to disable the background "update available" notice. |
 | `CI` | the binary | When set, the background update notice is suppressed automatically. |
 
