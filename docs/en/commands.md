@@ -432,7 +432,7 @@ rimo version
 **Output (stdout, plain text)**
 
 ```
-rimo version v1.0.0
+rimo version 1.0.0
 ```
 
 ---

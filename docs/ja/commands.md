@@ -430,7 +430,7 @@ rimo version
 **出力（stdout, プレーンテキスト）**
 
 ```
-rimo version v1.0.0
+rimo version 1.0.0
 ```
 
 ---
