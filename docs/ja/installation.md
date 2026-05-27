@@ -25,14 +25,6 @@ export PATH="$HOME/.local/bin:$PATH"
 rimo version
 ```
 
-### インストールオプション
-
-インストールスクリプトは次の環境変数を読み取ります:
-
-| 変数 | 目的 | 例 |
-|----------|---------|---------|
-| `RIMO_INSTALL_DIR` | 別のディレクトリにインストールする | `RIMO_INSTALL_DIR=/usr/local/bin curl -fsSL https://rimo.app/cli/install.sh \| sh` |
-
 ## 手動インストール
 
 スクリプトをシェルにパイプしたくない場合は、[リリースページ](https://github.com/rimoapp/cli/releases)
@@ -64,16 +56,6 @@ rimo version
 ```bash
 curl -fsSL -O "https://github.com/rimoapp/cli/releases/download/v${VERSION}/checksums.txt"
 shasum -a 256 -c checksums.txt --ignore-missing
-```
-
-### macOS Gatekeeper
-
-このバイナリはまだ Apple の公証（notarize）を受けていないため、初回実行時に
-macOS が *"Apple could not verify 'rimo' is free of malware..."* というメッセージで
-ブロックすることがあります。インストールしたバイナリの隔離属性を解除してください:
-
-```bash
-xattr -d com.apple.quarantine ~/.local/bin/rimo
 ```
 
 ## アップグレード

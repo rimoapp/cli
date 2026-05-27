@@ -9,7 +9,7 @@
 **出力の取り決め。** すべてのコマンドはデフォルトで stdout に JSON を出力します。
 一部の人間向けコマンドは成功時にプレーンテキストを出力します（エラーは常に JSON）:
 `rimo version`、`rimo upgrade`、`rimo note ask`、および `--transcript` /
-`--document` / `--all` / `--document-id` を指定した `rimo note get`。
+`--document` / `--full` / `--document-id` を指定した `rimo note get`。
 
 **グローバルフラグ**（すべてのコマンドに適用）:
 
@@ -271,17 +271,17 @@ rimo note get <note_id> [flags]
 |------|-------------|
 | `--transcript` | 文字起こしを `Speaker: content` 形式のプレーンテキストで出力。 |
 | `--document` | 主ドキュメントを Markdown のプレーンテキストで出力。 |
-| `--all` | 文字起こしに続けて主ドキュメントを出力。 |
+| `--full` | 文字起こしに続けて主ドキュメントを出力。 |
 | `--list-documents` | メモに添付されたドキュメントを一覧表示（JSON）。 |
 | `--document-id <id>` | ID で指定したドキュメントの Markdown を出力。 |
 
 **相互排他**
 
-- `--list-documents` / `--document-id` は `--transcript` / `--document` / `--all` と
+- `--list-documents` / `--document-id` は `--transcript` / `--document` / `--full` と
   併用できません。
 - `--list-documents` と `--document-id` は相互排他です。
 
-コンテンツフラグ（`--transcript`、`--document`、`--all`、`--document-id`）は stdout に
+コンテンツフラグ（`--transcript`、`--document`、`--full`、`--document-id`）は stdout に
 プレーンテキストを出力します。文字起こしやドキュメントのテキストは解析対象ではなく、
 読んだりパイプしたりするためのものだからです。エラーは依然として JSON なので、
 メモが見つからないエラーは機械可読のままです。
@@ -292,7 +292,7 @@ rimo note get <note_id> [flags]
 rimo note get note_abc123                          # メタデータ JSON
 rimo note get note_abc123 --transcript             # プレーンテキストの文字起こし
 rimo note get note_abc123 --document               # 主ドキュメントの Markdown
-rimo note get note_abc123 --all                    # 文字起こし + ドキュメント
+rimo note get note_abc123 --full                    # 文字起こし + ドキュメント
 rimo note get note_abc123 --list-documents         # ドキュメントの JSON 一覧
 rimo note get note_abc123 --document-id doc_xyz    # 特定ドキュメントの Markdown
 rimo note get note_abc123 --fields id,title        # JSON メタデータをフィルタ

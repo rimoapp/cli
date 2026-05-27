@@ -9,7 +9,7 @@ Complete reference for every `rimo` command. For installation see
 **Output contract.** All commands print JSON to stdout by default. A few
 human-facing commands print plain text on success (errors are always JSON):
 `rimo version`, `rimo upgrade`, `rimo note ask`, and `rimo note get` with
-`--transcript` / `--document` / `--all` / `--document-id`.
+`--transcript` / `--document` / `--full` / `--document-id`.
 
 **Global flags** (apply to every command):
 
@@ -273,17 +273,17 @@ rimo note get <note_id> [flags]
 |------|-------------|
 | `--transcript` | Print the transcript as plain text in `Speaker: content` form. |
 | `--document` | Print the primary document as markdown plain text. |
-| `--all` | Print transcript followed by the primary document. |
+| `--full` | Print transcript followed by the primary document. |
 | `--list-documents` | List documents attached to the note (JSON). |
 | `--document-id <id>` | Print a specific document's markdown by ID. |
 
 **Mutual exclusivity**
 
 - `--list-documents` / `--document-id` cannot be combined with `--transcript` /
-  `--document` / `--all`.
+  `--document` / `--full`.
 - `--list-documents` and `--document-id` are mutually exclusive.
 
-The content flags (`--transcript`, `--document`, `--all`, `--document-id`) print
+The content flags (`--transcript`, `--document`, `--full`, `--document-id`) print
 plain text to stdout because transcript and document text is meant to be read or
 piped, not parsed. Errors are still JSON, so a missing-note error stays
 machine-readable.
@@ -294,7 +294,7 @@ machine-readable.
 rimo note get note_abc123                          # metadata JSON
 rimo note get note_abc123 --transcript             # plain-text transcript
 rimo note get note_abc123 --document               # primary document markdown
-rimo note get note_abc123 --all                    # transcript + document
+rimo note get note_abc123 --full                    # transcript + document
 rimo note get note_abc123 --list-documents         # JSON list of documents
 rimo note get note_abc123 --document-id doc_xyz    # specific document markdown
 rimo note get note_abc123 --fields id,title        # filter the JSON metadata

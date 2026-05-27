@@ -25,14 +25,6 @@ Verify the install:
 rimo version
 ```
 
-### Install options
-
-The install script reads one environment variable:
-
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `RIMO_INSTALL_DIR` | Install to a different directory | `RIMO_INSTALL_DIR=/usr/local/bin curl -fsSL https://rimo.app/cli/install.sh \| sh` |
-
 ## Manual install
 
 Prefer not to pipe a script into your shell? Download the archive for your platform
@@ -64,16 +56,6 @@ Verify the checksum before installing:
 ```bash
 curl -fsSL -O "https://github.com/rimoapp/cli/releases/download/v${VERSION}/checksums.txt"
 shasum -a 256 -c checksums.txt --ignore-missing
-```
-
-### macOS Gatekeeper
-
-The binary is not yet Apple-notarized, so on first run macOS may block it with
-*"Apple could not verify 'rimo' is free of malware..."*. Clear the quarantine
-attribute on the installed binary:
-
-```bash
-xattr -d com.apple.quarantine ~/.local/bin/rimo
 ```
 
 ## Upgrading

@@ -13,7 +13,7 @@ JSON wrapper would just get in the way:
 
 - `rimo version` and `rimo upgrade`
 - `rimo note ask` (the streamed answer)
-- `rimo note get` with `--transcript`, `--document`, `--all`, or `--document-id`
+- `rimo note get` with `--transcript`, `--document`, `--full`, or `--document-id`
 
 Even for these, **errors are always JSON**, so failures stay machine-readable.
 
