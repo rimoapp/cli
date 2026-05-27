@@ -9,7 +9,7 @@ Complete reference for every `rimo` command. For installation see
 **Output contract.** All commands print JSON to stdout by default. A few
 human-facing commands print plain text on success (errors are always JSON):
 `rimo version`, `rimo upgrade`, `rimo note ask`, and `rimo note get` with
-`--transcript` / `--document` / `--all` / `--document-id`.
+`--transcript` / `--document` / `--full` / `--document-id`.
 
 **Global flags** (apply to every command):
 
@@ -273,17 +273,17 @@ rimo note get <note_id> [flags]
 |------|-------------|
 | `--transcript` | Print the transcript as plain text in `Speaker: content` form. |
 | `--document` | Print the primary document as markdown plain text. |
-| `--all` | Print transcript followed by the primary document. |
+| `--full` | Print transcript followed by the primary document. |
 | `--list-documents` | List documents attached to the note (JSON). |
 | `--document-id <id>` | Print a specific document's markdown by ID. |
 
 **Mutual exclusivity**
 
 - `--list-documents` / `--document-id` cannot be combined with `--transcript` /
-  `--document` / `--all`.
+  `--document` / `--full`.
 - `--list-documents` and `--document-id` are mutually exclusive.
 
-The content flags (`--transcript`, `--document`, `--all`, `--document-id`) print
+The content flags (`--transcript`, `--document`, `--full`, `--document-id`) print
 plain text to stdout because transcript and document text is meant to be read or
 piped, not parsed. Errors are still JSON, so a missing-note error stays
 machine-readable.
@@ -294,7 +294,7 @@ machine-readable.
 rimo note get note_abc123                          # metadata JSON
 rimo note get note_abc123 --transcript             # plain-text transcript
 rimo note get note_abc123 --document               # primary document markdown
-rimo note get note_abc123 --all                    # transcript + document
+rimo note get note_abc123 --full                    # transcript + document
 rimo note get note_abc123 --list-documents         # JSON list of documents
 rimo note get note_abc123 --document-id doc_xyz    # specific document markdown
 rimo note get note_abc123 --fields id,title        # filter the JSON metadata
@@ -432,19 +432,21 @@ rimo version
 **Output (stdout, plain text)**
 
 ```
-rimo version v1.0.0 (commit abc1234)
+rimo version v1.0.0
 ```
 
 ---
 
 ### `rimo upgrade`
 
-Self-upgrade the installed binary to the latest GitHub release.
+Self-upgrade the installed binary to the latest release.
+
+`rimo upgrade` always installs the **latest** release — there is no flag to pin or downgrade to an older version. The release archive is downloaded over HTTPS and its checksum is verified against the release's `checksums.txt` before the running binary is replaced; no login is required.
 
 **Syntax**
 
 ```
-rimo upgrade [--check] [--version <tag>] [--use-sudo]
+rimo upgrade [--check] [--use-sudo]
 ```
 
 **Flags**
@@ -452,7 +454,6 @@ rimo upgrade [--check] [--version <tag>] [--use-sudo]
 | Flag | Description |
 |------|-------------|
 | `--check` | Report whether an update is available; do not download or install. |
-| `--version <tag>` | Install a specific tag instead of "latest". Useful for pinned downgrades. |
 | `--use-sudo` | Retry via `sudo install -m 0755` if the install path is not writable. Opt-in. |
 
 **Output (stdout, plain text)**
@@ -473,7 +474,6 @@ final status line.
 ```bash
 rimo upgrade --check                   # is there a newer release?
 rimo upgrade                           # latest
-rimo upgrade --version v1.1.0          # specific tag
 sudo rimo upgrade --use-sudo           # retry under sudo for root-owned install dirs
 ```
 
@@ -481,8 +481,9 @@ sudo rimo upgrade --use-sudo           # retry under sudo for root-owned install
 
 - `permission_denied` (exit 2) — the install path is not writable and `--use-sudo`
   was not passed. `details.suggested_command` is `sudo rimo upgrade --use-sudo`.
-- General `error` (exit 1) — dev-build refusal, download failure (asset not found
-  for OS/arch, network), or extract failure.
+- General `error` (exit 1) — dev-build refusal, version-check failure (network or
+  rate limit), download failure (asset not found for OS/arch, network), checksum
+  mismatch, or extract failure.
 
 **Startup update notice**
 

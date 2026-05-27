@@ -9,7 +9,7 @@
 **出力の取り決め。** すべてのコマンドはデフォルトで stdout に JSON を出力します。
 一部の人間向けコマンドは成功時にプレーンテキストを出力します（エラーは常に JSON）:
 `rimo version`、`rimo upgrade`、`rimo note ask`、および `--transcript` /
-`--document` / `--all` / `--document-id` を指定した `rimo note get`。
+`--document` / `--full` / `--document-id` を指定した `rimo note get`。
 
 **グローバルフラグ**（すべてのコマンドに適用）:
 
@@ -271,17 +271,17 @@ rimo note get <note_id> [flags]
 |------|-------------|
 | `--transcript` | 文字起こしを `Speaker: content` 形式のプレーンテキストで出力。 |
 | `--document` | 主ドキュメントを Markdown のプレーンテキストで出力。 |
-| `--all` | 文字起こしに続けて主ドキュメントを出力。 |
+| `--full` | 文字起こしに続けて主ドキュメントを出力。 |
 | `--list-documents` | メモに添付されたドキュメントを一覧表示（JSON）。 |
 | `--document-id <id>` | ID で指定したドキュメントの Markdown を出力。 |
 
 **相互排他**
 
-- `--list-documents` / `--document-id` は `--transcript` / `--document` / `--all` と
+- `--list-documents` / `--document-id` は `--transcript` / `--document` / `--full` と
   併用できません。
 - `--list-documents` と `--document-id` は相互排他です。
 
-コンテンツフラグ（`--transcript`、`--document`、`--all`、`--document-id`）は stdout に
+コンテンツフラグ（`--transcript`、`--document`、`--full`、`--document-id`）は stdout に
 プレーンテキストを出力します。文字起こしやドキュメントのテキストは解析対象ではなく、
 読んだりパイプしたりするためのものだからです。エラーは依然として JSON なので、
 メモが見つからないエラーは機械可読のままです。
@@ -292,7 +292,7 @@ rimo note get <note_id> [flags]
 rimo note get note_abc123                          # メタデータ JSON
 rimo note get note_abc123 --transcript             # プレーンテキストの文字起こし
 rimo note get note_abc123 --document               # 主ドキュメントの Markdown
-rimo note get note_abc123 --all                    # 文字起こし + ドキュメント
+rimo note get note_abc123 --full                    # 文字起こし + ドキュメント
 rimo note get note_abc123 --list-documents         # ドキュメントの JSON 一覧
 rimo note get note_abc123 --document-id doc_xyz    # 特定ドキュメントの Markdown
 rimo note get note_abc123 --fields id,title        # JSON メタデータをフィルタ
@@ -430,19 +430,21 @@ rimo version
 **出力（stdout, プレーンテキスト）**
 
 ```
-rimo version v1.0.0 (commit abc1234)
+rimo version v1.0.0
 ```
 
 ---
 
 ### `rimo upgrade`
 
-インストール済みバイナリを最新の GitHub リリースへ自己アップグレードします。
+インストール済みバイナリを最新リリースへ自己アップグレードします。
+
+`rimo upgrade` は常に**最新**リリースをインストールします — 古いバージョンへの固定（ピン留め）やダウングレードを行うフラグはありません。リリースアーカイブは HTTPS でダウンロードされ、実行中のバイナリを置き換える前にリリースの `checksums.txt` でチェックサムが検証されます。ログインは不要です。
 
 **構文**
 
 ```
-rimo upgrade [--check] [--version <tag>] [--use-sudo]
+rimo upgrade [--check] [--use-sudo]
 ```
 
 **フラグ**
@@ -450,7 +452,6 @@ rimo upgrade [--check] [--version <tag>] [--use-sudo]
 | フラグ | 説明 |
 |------|-------------|
 | `--check` | 更新が利用可能かどうかを報告する。ダウンロードやインストールはしない。 |
-| `--version <tag>` | "latest" の代わりに特定のタグをインストールする。固定したダウングレードに便利。 |
 | `--use-sudo` | インストールパスが書き込み不可の場合、`sudo install -m 0755` で再試行する。オプトイン。 |
 
 **出力（stdout, プレーンテキスト）**
@@ -471,7 +472,6 @@ Upgraded rimo from v1.0.0 → v1.1.0.
 ```bash
 rimo upgrade --check                   # 新しいリリースはあるか？
 rimo upgrade                           # 最新
-rimo upgrade --version v1.1.0          # 特定のタグ
 sudo rimo upgrade --use-sudo           # root 所有のインストールディレクトリ向けに sudo で再試行
 ```
 
@@ -479,8 +479,9 @@ sudo rimo upgrade --use-sudo           # root 所有のインストールディ�
 
 - `permission_denied`（終了コード 2） — インストールパスが書き込み不可で、`--use-sudo`
   が渡されなかった。`details.suggested_command` は `sudo rimo upgrade --use-sudo`。
-- 一般的な `error`（終了コード 1） — 開発ビルドの拒否、ダウンロード失敗（OS/アーキテクチャ
-  向けアセットが見つからない、ネットワーク）、または展開失敗。
+- 一般的な `error`（終了コード 1） — 開発ビルドの拒否、バージョンチェックの失敗（ネットワーク
+  またはレート制限）、ダウンロード失敗（OS/アーキテクチャ向けアセットが見つからない、
+  ネットワーク）、チェックサムの不一致、または展開失敗。
 
 **起動時の更新通知**
 

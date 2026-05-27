@@ -13,7 +13,7 @@
 
 - `rimo version` と `rimo upgrade`
 - `rimo note ask`（ストリーミングされる回答）
-- `--transcript`、`--document`、`--all`、`--document-id` を指定した `rimo note get`
+- `--transcript`、`--document`、`--full`、`--document-id` を指定した `rimo note get`
 
 これらの場合でも、**エラーは常に JSON** なので、失敗は機械可読のままです。
 
