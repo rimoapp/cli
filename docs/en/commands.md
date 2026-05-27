@@ -439,12 +439,14 @@ rimo version v1.0.0
 
 ### `rimo upgrade`
 
-Self-upgrade the installed binary to the latest GitHub release.
+Self-upgrade the installed binary to the latest release.
+
+`rimo upgrade` always installs the **latest** release — there is no flag to pin or downgrade to an older version. The release archive is downloaded over HTTPS and its checksum is verified against the release's `checksums.txt` before the running binary is replaced; no login is required.
 
 **Syntax**
 
 ```
-rimo upgrade [--check] [--version <tag>] [--use-sudo]
+rimo upgrade [--check] [--use-sudo]
 ```
 
 **Flags**
@@ -452,7 +454,6 @@ rimo upgrade [--check] [--version <tag>] [--use-sudo]
 | Flag | Description |
 |------|-------------|
 | `--check` | Report whether an update is available; do not download or install. |
-| `--version <tag>` | Install a specific tag instead of "latest". Useful for pinned downgrades. |
 | `--use-sudo` | Retry via `sudo install -m 0755` if the install path is not writable. Opt-in. |
 
 **Output (stdout, plain text)**
@@ -473,7 +474,6 @@ final status line.
 ```bash
 rimo upgrade --check                   # is there a newer release?
 rimo upgrade                           # latest
-rimo upgrade --version v1.1.0          # specific tag
 sudo rimo upgrade --use-sudo           # retry under sudo for root-owned install dirs
 ```
 
@@ -481,8 +481,9 @@ sudo rimo upgrade --use-sudo           # retry under sudo for root-owned install
 
 - `permission_denied` (exit 2) — the install path is not writable and `--use-sudo`
   was not passed. `details.suggested_command` is `sudo rimo upgrade --use-sudo`.
-- General `error` (exit 1) — dev-build refusal, download failure (asset not found
-  for OS/arch, network), or extract failure.
+- General `error` (exit 1) — dev-build refusal, version-check failure (network or
+  rate limit), download failure (asset not found for OS/arch, network), checksum
+  mismatch, or extract failure.
 
 **Startup update notice**
 

@@ -437,12 +437,14 @@ rimo version v1.0.0
 
 ### `rimo upgrade`
 
-インストール済みバイナリを最新の GitHub リリースへ自己アップグレードします。
+インストール済みバイナリを最新リリースへ自己アップグレードします。
+
+`rimo upgrade` は常に**最新**リリースをインストールします — 古いバージョンへの固定（ピン留め）やダウングレードを行うフラグはありません。リリースアーカイブは HTTPS でダウンロードされ、実行中のバイナリを置き換える前にリリースの `checksums.txt` でチェックサムが検証されます。ログインは不要です。
 
 **構文**
 
 ```
-rimo upgrade [--check] [--version <tag>] [--use-sudo]
+rimo upgrade [--check] [--use-sudo]
 ```
 
 **フラグ**
@@ -450,7 +452,6 @@ rimo upgrade [--check] [--version <tag>] [--use-sudo]
 | フラグ | 説明 |
 |------|-------------|
 | `--check` | 更新が利用可能かどうかを報告する。ダウンロードやインストールはしない。 |
-| `--version <tag>` | "latest" の代わりに特定のタグをインストールする。固定したダウングレードに便利。 |
 | `--use-sudo` | インストールパスが書き込み不可の場合、`sudo install -m 0755` で再試行する。オプトイン。 |
 
 **出力（stdout, プレーンテキスト）**
@@ -471,7 +472,6 @@ Upgraded rimo from v1.0.0 → v1.1.0.
 ```bash
 rimo upgrade --check                   # 新しいリリースはあるか？
 rimo upgrade                           # 最新
-rimo upgrade --version v1.1.0          # 特定のタグ
 sudo rimo upgrade --use-sudo           # root 所有のインストールディレクトリ向けに sudo で再試行
 ```
 
@@ -479,8 +479,9 @@ sudo rimo upgrade --use-sudo           # root 所有のインストールディ�
 
 - `permission_denied`（終了コード 2） — インストールパスが書き込み不可で、`--use-sudo`
   が渡されなかった。`details.suggested_command` は `sudo rimo upgrade --use-sudo`。
-- 一般的な `error`（終了コード 1） — 開発ビルドの拒否、ダウンロード失敗（OS/アーキテクチャ
-  向けアセットが見つからない、ネットワーク）、または展開失敗。
+- 一般的な `error`（終了コード 1） — 開発ビルドの拒否、バージョンチェックの失敗（ネットワーク
+  またはレート制限）、ダウンロード失敗（OS/アーキテクチャ向けアセットが見つからない、
+  ネットワーク）、チェックサムの不一致、または展開失敗。
 
 **起動時の更新通知**
 
