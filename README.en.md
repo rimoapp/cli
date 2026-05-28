@@ -69,7 +69,23 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 ## AI agents
 
-`rimo` ships a [Claude Code skill](skills/rimo-cli/SKILL.md) so agents can install, authenticate, and pull note content autonomously.
+`rimo` ships a ready-to-use [agent skill](skills/rimo-cli/SKILL.md) so AI coding agents (Claude Code, Codex, and others) can install, authenticate, and pull note content autonomously. The skill is a self-contained operating manual the agent reads on demand.
+
+**Use with Claude Code** — drop the skill into your project or user skills directory and Claude Code auto-loads it when you mention Rimo:
+
+```bash
+# Project-local (commit alongside your repo)
+mkdir -p .claude/skills && cp -r skills/rimo-cli .claude/skills/
+
+# Or user-global
+mkdir -p ~/.claude/skills && cp -r skills/rimo-cli ~/.claude/skills/
+```
+
+Then ask naturally: *"Summarize my Rimo notes from this week"*, *"What did we decide about pricing in our last meeting?"*, *"Find my Rimo notes about the Q3 release plan"*.
+
+**Use with Codex or other agents** — point the agent at [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) at the start of a session (e.g. `cat skills/rimo-cli/SKILL.md`) or include its contents in the agent's system prompt. Any agent that can run shell commands and read markdown can follow the instructions.
+
+See [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) for the full agent operating manual.
 
 ## Support
 

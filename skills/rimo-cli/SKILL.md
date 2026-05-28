@@ -1,18 +1,82 @@
 ---
 name: rimo-cli
-description: Use the `rimo` CLI to interact with the Rimo Voice platform — list/read/search meeting notes, transcripts, and documents, and ask AI questions across them, via the Third-Party API. Trigger when the user mentions Rimo, asks about meeting notes/minutes/transcripts/documents stored in Rimo, or invokes `rimo` directly.
+description: Use the `rimo` CLI to interact with the Rimo Voice platform — list/read/search meeting notes, transcripts, and documents, and ask AI questions across them. Trigger when the user mentions Rimo, asks about meeting notes/minutes/transcripts/documents stored in Rimo, or invokes `rimo` directly.
 ---
 
-# rimo CLI — agent operating manual
+# rimo CLI Skill
 
-`rimo` is a Go CLI that wraps the **Rimo Voice Third-Party API**. It is explicitly designed for AI agents:
+This skill teaches AI coding agents (Claude Code, Codex, and others) how to use the [`rimo` command-line tool](https://github.com/rimoapp/cli) to access [Rimo Voice](https://rimo.app) meeting notes, transcripts, documents, and AI-powered Q&A — all from the terminal.
 
-- **Always JSON on stdout** (a few narrow plain-text exceptions, see §3).
+`rimo` is purpose-built for both humans and AI agents:
+
+- **JSON-first** on stdout (a few narrow plain-text exceptions, see §3 below).
 - **Errors are JSON too**, on stdout — exit code distinguishes success from failure.
-- **Field filtering** (`--fields`, `--excludes`) is a first-class feature so you can keep responses small.
+- **Field filtering** (`--fields`, `--excludes`) is a first-class feature so responses stay small.
 - **`--dry-run`** simulates writes without side effects.
 
 If anything below is out of date with the installed binary, prefer `rimo <command> --help`.
+
+---
+
+## Using this skill
+
+This skill works with any AI agent that can read markdown documentation and execute shell commands.
+
+### With Claude Code
+
+Claude Code auto-discovers skills placed in either of these locations:
+
+```bash
+# Project-local (recommended for team-shared usage — commit to your repo)
+mkdir -p .claude/skills
+cp -r skills/rimo-cli .claude/skills/
+
+# Or user-global (available across all your projects)
+mkdir -p ~/.claude/skills
+cp -r skills/rimo-cli ~/.claude/skills/
+```
+
+Then just ask naturally in Claude Code:
+
+> "Summarize my Rimo notes from this week"
+> "What did we decide about pricing in our last meeting?"
+> "Find my Rimo notes about the Q3 release plan"
+
+Claude Code loads the skill automatically when it detects a Rimo-related request.
+
+### With Codex (or other AI agents)
+
+For agents that don't auto-load skills, point them at this file at the start of a session:
+
+```bash
+# Hand the skill to the agent as context
+cat skills/rimo-cli/SKILL.md
+```
+
+Or include the contents of this file in the agent's system/initial prompt. Any agent that can run shell commands and read documentation can follow the operating manual below.
+
+### Prerequisites
+
+Make sure `rimo` is installed and you have an authenticated session:
+
+```bash
+# Install (no sudo required)
+curl -fsSL https://rimo.app/cli/install.sh | sh
+
+# Authenticate — opens your browser, token is saved securely in the OS keyring
+rimo auth login
+
+# Verify
+rimo auth status
+```
+
+For headless/CI environments, see the alternative `RIMO_TOKEN` flow in §2 below.
+
+---
+
+# Agent operating manual
+
+Everything below is intended for the AI agent driving the CLI.
 
 ## 1. Check before doing anything
 
@@ -31,25 +95,9 @@ curl -fsSL https://rimo.app/cli/install.sh | sh
 
 ## 2. Authentication
 
-Tokens are stored in the OS keyring. For agent use, the simplest pattern is the `RIMO_TOKEN` env var:
+The recommended way to authenticate is `rimo auth login`. It opens the browser, completes a secure consent flow, and stores the token in the OS keyring. Tokens auto-refresh transparently on every call, so the agent does not need to manage refresh.
 
-```bash
-export RIMO_TOKEN=...      # takes priority over keyring; used as-is, no refresh
-rimo note list
-```
-
-Resolution order (first hit wins):
-
-1. `RIMO_TOKEN` env var
-2. `--account <alias>` flag → keyring
-3. `default_account` in `~/.config/rimo/config.yaml` → keyring
-4. Exit 2 with `auth_error` → run `rimo auth login` (or ask the user to)
-
-### If already authenticated
-
-Just use it. `rimo auth status` confirms which account is active and its `token_status` (`valid` / `expiring_soon` / `expired` / `unknown`). Tokens auto-refresh transparently on each call, so you don't need to manage that yourself.
-
-### If not authenticated
+### Recommended: `rimo auth login` (browser-based)
 
 In an interactive session with a user present, it is fine to run `rimo auth login` yourself — just walk the user through it. The flow:
 
@@ -58,13 +106,35 @@ In an interactive session with a user present, it is fine to run `rimo auth logi
 3. After the user presses Enter, the CLI opens the browser (`open` on macOS, `xdg-open` on Linux, `start` on Windows) and polls the backend until they finish the consent screen.
 4. On success the CLI prints a JSON line to stdout (`{"status":"logged_in", ...}`), stores the token in the OS keyring, and sets the new account as active. You can proceed with the original task.
 
+If `rimo auth login` takes more than ~10 minutes the code expires (`token_exchange_failed`) — re-run if the user is still with you.
+
 When to instead ask the user to run it themselves:
 
-- **Headless / CI / no browser** — guide them to set `RIMO_TOKEN` instead.
-- **Non-interactive agent run** (no way to relay the stderr code, no human attached) — `rimo auth login` will hang. Bail out and tell the user.
+- **Headless / CI / no browser** — use the `RIMO_TOKEN` fallback below instead.
+- **Non-interactive agent run** (no human attached to relay the stderr code) — `rimo auth login` will hang. Bail out and tell the user.
 - **User declines** — never push.
 
-If you start `rimo auth login` and it takes more than ~10 minutes the code expires (`token_exchange_failed`) — re-run if the user is still with you.
+### Alternative: `RIMO_TOKEN` env var (headless / CI)
+
+If the user already has a token provisioned for their environment (typically CI), they can set it as an environment variable:
+
+```bash
+export RIMO_TOKEN=...      # used as-is, no refresh
+rimo note list
+```
+
+Use this only when `rimo auth login` is not viable (headless, CI, no browser). Do not try to mint a token yourself — if the user does not already have one, the right path is `rimo auth login`.
+
+### Token resolution order (first hit wins)
+
+1. `RIMO_TOKEN` env var
+2. `--account <alias>` flag → keyring
+3. `default_account` in `~/.config/rimo/config.yaml` → keyring
+4. Exit 2 with `auth_error` → run `rimo auth login` (or ask the user to)
+
+### If already authenticated
+
+Just use it. `rimo auth status` confirms which account is active and its `token_status` (`valid` / `expiring_soon` / `expired` / `unknown`). Tokens auto-refresh transparently on each call.
 
 ### Other account ops (only when the user asks)
 
@@ -206,9 +276,14 @@ Inline `[xxxxx]` chunk-ref citations the model emits are stripped from the visib
 
 Plain text. `rimo upgrade` downloads the latest release over HTTPS and verifies its checksum before replacing the binary — no GitHub login or extra tooling is required, and there is no flag to pin or downgrade. Do not run `rimo upgrade` autonomously — let the user trigger it.
 
-### Not implemented yet — do NOT call
+### Support under development
 
-`rimo note delete`, `rimo note share`, `rimo team *`, `rimo user *`, `rimo transcribe *`, `rimo commands` (introspection). If the user asks for one of these, say it's not implemented yet.
+The following commands are planned but not yet available — support is under active development. If the user asks for one of these, let them know it is coming soon and avoid calling them:
+
+- `rimo note delete`, `rimo note share`
+- `rimo team *`, `rimo user *`
+- `rimo transcribe *`
+- `rimo commands` (introspection)
 
 ## 6. Global flags — use these to keep responses small
 
@@ -246,12 +321,17 @@ rimo note get <note_id> --transcript
 rimo note get <note_id> --full
 ```
 
-**"What meetings did I attend last week?":**
+**"What meetings did I attend last week?":** the CLI does **not** interpret relative dates — you must convert "last week", "yesterday", etc. into absolute `YYYY-MM-DD` values yourself (using today's date from your context), then filter with `jq`.
 
 ```bash
+# Step 1: compute the absolute date range from today.
+#   Example — if today is 2026-05-28 (Thu), "last week" spans 2026-05-18 (Mon) → 2026-05-24 (Sun).
+# Step 2: pull the attended notes and filter on created_at.
 rimo note list --attended --page-size 50 --fields id,title,created_at \
-  | jq '.notes[] | select(.created_at >= "2026-05-15")'
+  | jq '.notes[] | select(.created_at >= "2026-05-18" and .created_at < "2026-05-25")'
 ```
+
+The same pattern works for any time range — always substitute the absolute start/end dates, never pass relative phrases to `jq` or the CLI.
 
 **"Find me notes about X":** prefer search (cheap, list back) over ask (LLM, single answer).
 
@@ -269,11 +349,12 @@ rimo note ask "<question>"
 
 - ❌ Don't run `rimo auth login` in a non-interactive context (CI, headless, no human attached) — it blocks on Enter and a browser flow. In an interactive session it's fine; see §2.
 - ❌ Don't hit the Rimo backend with raw `curl` — use `rimo`. The CLI handles token resolution, refresh, and error normalization.
-- ❌ Don't assume `note delete` / `note share` / `team *` / `user *` / `transcribe *` work — they're not implemented.
+- ❌ Don't assume `note delete` / `note share` / `team *` / `user *` / `transcribe *` work — support is still under development.
 - ❌ Don't ignore the exit code. JSON on stdout + nonzero exit = error, not data.
 - ❌ Don't pipe `--transcript` / `--document` / `--full` / `--document-id` / `note ask` / `version` / `upgrade` into `jq` — those are plain text on stdout.
 - ❌ Don't try `--yes` or any confirmation-skip flag — they don't exist. Safety is enforced via token scopes.
 - ❌ Don't run `rimo upgrade` on your own — let the user decide when to update.
+- ❌ Don't pass relative dates ("last week", "yesterday") to `jq` filters or CLI flags — convert to absolute `YYYY-MM-DD` first.
 
 ## 9. When in doubt
 
