@@ -69,7 +69,23 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 ## AI エージェント
 
-`rimo` には [Claude Code スキル](skills/rimo-cli/SKILL.md) が同梱されており、エージェントが自律的にインストール・認証・メモ内容の取得を行えます。
+`rimo` には [エージェント用スキル](skills/rimo-cli/SKILL.md) が同梱されており、AI コーディングエージェント（Claude Code、Codex など）が自律的にインストール・認証・メモ内容の取得を行えます。スキルはエージェントがオンデマンドで読み込む、自己完結型の操作マニュアルです。
+
+**Claude Code での利用** — スキルをプロジェクトまたはユーザーのスキルディレクトリに配置すると、Rimo に関する話題が出たときに Claude Code が自動的に読み込みます:
+
+```bash
+# プロジェクト単位（リポジトリと一緒にコミット）
+mkdir -p .claude/skills && cp -r skills/rimo-cli .claude/skills/
+
+# またはユーザー単位（全プロジェクトで利用可能）
+mkdir -p ~/.claude/skills && cp -r skills/rimo-cli ~/.claude/skills/
+```
+
+その後はそのまま会話で依頼できます: *「今週の Rimo のメモを要約して」*、*「直近のミーティングで料金についてどう決まった？」*、*「Q3 リリースプランに関する Rimo のメモを探して」*。
+
+**Codex やその他のエージェントでの利用** — セッション開始時にエージェントへ [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) を読み込ませる（例: `cat skills/rimo-cli/SKILL.md`）か、内容をシステムプロンプトに含めてください。シェルコマンドを実行でき Markdown を読めるエージェントであれば、そのまま手順に従って動作します。
+
+完全なエージェント操作マニュアルは [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) を参照してください。
 
 ## サポート
 
