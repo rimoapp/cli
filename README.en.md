@@ -65,13 +65,32 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 - [Commands](docs/en/commands.md) — full reference with flags and examples
 - [Configuration](docs/en/configuration.md) — `config.yaml`, credential storage, environment variables
 - [Output & errors](docs/en/output-and-errors.md) — JSON design, `--fields`/`--excludes`, exit codes
+- [MCP server](docs/en/mcp.md) — expose `rimo` as typed tools to Claude Code, Codex, Cursor, and other MCP clients
 - [Troubleshooting](docs/en/troubleshooting.md) — common install, login, and PATH issues
 
 ## AI agents
 
-`rimo` ships a ready-to-use [agent skill](skills/rimo-cli/SKILL.md) so AI coding agents (Claude Code, Codex, and others) can install, authenticate, and pull note content autonomously. The skill is a self-contained operating manual the agent reads on demand.
+`rimo` supports two complementary ways to plug into AI coding agents (Claude Code, Codex, Cursor, and others):
 
-**Use with Claude Code** — drop the skill into your project or user skills directory and Claude Code auto-loads it when you mention Rimo:
+### MCP server (typed tools, recommended for MCP-capable clients)
+
+Run `rimo mcp` to expose the CLI as typed [Model Context Protocol](https://modelcontextprotocol.io) tools — agents call them natively without shelling out and parsing JSON. Wire it into Claude Code with a `.mcp.json` entry:
+
+```json
+{
+  "mcpServers": {
+    "rimo": { "type": "stdio", "command": "rimo", "args": ["mcp"] }
+  }
+}
+```
+
+Restart your client and ask naturally: *"Summarize my Rimo notes from this week"*, *"What did we decide about pricing?"*, *"Find Rimo notes about the Q3 release plan"*.
+
+Full setup for Claude Code, Codex, Cursor, and other MCP clients, plus the tool list and example prompts: [MCP server](docs/en/mcp.md).
+
+### Agent skill (works with any agent that runs shell commands)
+
+`rimo` also ships a ready-to-use [agent skill](skills/rimo-cli/SKILL.md) — a self-contained operating manual any agent can read and follow by running shell commands. Use it when your agent does not support MCP, or when you want a single artifact you can paste into a system prompt.
 
 ```bash
 # Project-local (commit alongside your repo)
@@ -81,11 +100,7 @@ mkdir -p .claude/skills && cp -r skills/rimo-cli .claude/skills/
 mkdir -p ~/.claude/skills && cp -r skills/rimo-cli ~/.claude/skills/
 ```
 
-Then ask naturally: *"Summarize my Rimo notes from this week"*, *"What did we decide about pricing in our last meeting?"*, *"Find my Rimo notes about the Q3 release plan"*.
-
-**Use with Codex or other agents** — point the agent at [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) at the start of a session (e.g. `cat skills/rimo-cli/SKILL.md`) or include its contents in the agent's system prompt. Any agent that can run shell commands and read markdown can follow the instructions.
-
-See [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) for the full agent operating manual.
+For Codex or other agents, point them at [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) at the start of a session (e.g. `cat skills/rimo-cli/SKILL.md`) or include its contents in the agent's system prompt.
 
 ## Support
 

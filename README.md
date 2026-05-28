@@ -65,13 +65,32 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 - [コマンド](docs/ja/commands.md) — フラグと例を含む完全なリファレンス
 - [設定](docs/ja/configuration.md) — `config.yaml`、認証情報の保存、環境変数
 - [出力とエラー](docs/ja/output-and-errors.md) — JSON 設計、`--fields`/`--excludes`、終了コード
+- [MCP サーバー](docs/ja/mcp.md) — `rimo` を Claude Code、Codex、Cursor などの MCP クライアントに型付きツールとして公開
 - [トラブルシューティング](docs/ja/troubleshooting.md) — インストール・ログイン・PATH のよくある問題
 
 ## AI エージェント
 
-`rimo` には [エージェント用スキル](skills/rimo-cli/SKILL.md) が同梱されており、AI コーディングエージェント（Claude Code、Codex など）が自律的にインストール・認証・メモ内容の取得を行えます。スキルはエージェントがオンデマンドで読み込む、自己完結型の操作マニュアルです。
+`rimo` は AI コーディングエージェント（Claude Code、Codex、Cursor など）への組み込み手段を 2 つ提供しています。両者は併用できます。
 
-**Claude Code での利用** — スキルをプロジェクトまたはユーザーのスキルディレクトリに配置すると、Rimo に関する話題が出たときに Claude Code が自動的に読み込みます:
+### MCP サーバー（型付きツール、MCP 対応クライアントでは推奨）
+
+`rimo mcp` を起動すると、CLI が [Model Context Protocol](https://modelcontextprotocol.io) の型付きツールとして公開され、エージェントは CLI に shell out して JSON を解析する必要がありません。Claude Code には `.mcp.json` にエントリを追加するだけ:
+
+```json
+{
+  "mcpServers": {
+    "rimo": { "type": "stdio", "command": "rimo", "args": ["mcp"] }
+  }
+}
+```
+
+クライアントを再起動し、自然言語で問いかけてください: *「今週の Rimo のメモを要約して」*、*「料金について何を決めた?」*、*「Q3 リリースプランに関する Rimo のメモを探して」*。
+
+Claude Code、Codex、Cursor などの完全なセットアップ、ツール一覧、問いかけ例: [MCP サーバー](docs/ja/mcp.md)。
+
+### エージェント用スキル（シェルコマンドを実行できる任意のエージェント向け）
+
+`rimo` には [エージェント用スキル](skills/rimo-cli/SKILL.md) も同梱されています — 自己完結型の操作マニュアルで、任意のエージェントが読み込んでシェルコマンドを実行することで利用できます。MCP に対応していないエージェント向け、またはシステムプロンプトに貼り付ける単一の成果物が欲しい場合にどうぞ。
 
 ```bash
 # プロジェクト単位（リポジトリと一緒にコミット）
@@ -81,11 +100,7 @@ mkdir -p .claude/skills && cp -r skills/rimo-cli .claude/skills/
 mkdir -p ~/.claude/skills && cp -r skills/rimo-cli ~/.claude/skills/
 ```
 
-その後はそのまま会話で依頼できます: *「今週の Rimo のメモを要約して」*、*「直近のミーティングで料金についてどう決まった？」*、*「Q3 リリースプランに関する Rimo のメモを探して」*。
-
-**Codex やその他のエージェントでの利用** — セッション開始時にエージェントへ [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) を読み込ませる（例: `cat skills/rimo-cli/SKILL.md`）か、内容をシステムプロンプトに含めてください。シェルコマンドを実行でき Markdown を読めるエージェントであれば、そのまま手順に従って動作します。
-
-完全なエージェント操作マニュアルは [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) を参照してください。
+Codex やその他のエージェントでは、セッション開始時に [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) を読み込ませる（例: `cat skills/rimo-cli/SKILL.md`）か、内容をシステムプロンプトに含めてください。
 
 ## サポート
 
