@@ -100,11 +100,13 @@ The recommended way to authenticate is `rimo auth login`. It opens the browser, 
 In an interactive session with a user present, it is fine to run `rimo auth login` yourself — just walk the user through it. The flow:
 
 1. You run `rimo auth login`.
-2. The CLI prints a user code and a verification URI to **stderr**, then waits for the user to press **Enter** before opening the browser. Surface those values to the user verbatim so they can verify the code matches.
-3. After the user presses Enter, the CLI opens the browser (`open` on macOS, `xdg-open` on Linux, `start` on Windows) and polls the backend until they finish the consent screen.
+2. The CLI opens the user's default browser to authorize this CLI.
+3. The user signs in if needed and approves the request.
 4. On success the CLI prints a JSON line to stdout (`{"status":"logged_in", ...}`), stores the token in the OS keyring, and sets the new account as active. You can proceed with the original task.
 
-If `rimo auth login` takes more than ~10 minutes the code expires (`token_exchange_failed`) — re-run if the user is still with you.
+If the user is on a machine without a usable browser (SSH, container, headless CI), run `rimo auth login --no-browser` instead: the CLI prints a URL, the user opens it on any other device, approves, and pastes the short code from the page back into the terminal.
+
+If `rimo auth login` takes more than ~10 minutes the code expires — re-run if the user is still with you.
 
 When to instead ask the user to run it themselves:
 

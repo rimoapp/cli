@@ -39,12 +39,28 @@ rimo auth login
 
 **Flow**
 
-1. Prints a user code and a verification URL to stderr.
-2. Waits for Enter, then opens your default browser to the verification URL
-   (`open` on macOS, `xdg-open` on Linux, `start` on Windows).
-3. Waits until you approve the request in your browser.
-4. Stores the access + refresh tokens securely using your OS credential store.
-5. Registers an alias in `~/.config/rimo/config.yaml` and sets it active.
+By default, `rimo auth login` opens your browser:
+
+1. Opens your default browser to authorize this CLI.
+2. Waits for you to sign in if needed and approve the request.
+3. Stores the access + refresh tokens securely using your OS credential store.
+4. Registers an alias in `~/.config/rimo/config.yaml` and sets it active.
+
+**`--no-browser` flow**
+
+For machines without a usable browser:
+
+1. Prints a URL to stderr.
+2. Open the URL on any other device, sign in if needed and approve; the page
+   shows a short code.
+3. Paste the code back into the terminal at the prompt.
+4. Stores tokens and registers the alias as above.
+
+**Flags**
+
+| Flag | Description |
+|------|-------------|
+| `--no-browser` | Print a URL to open on another device, then paste the displayed code back into the terminal. |
 
 **Alias generation.** Auto-generated from the email and org name:
 
@@ -68,11 +84,6 @@ refreshes the metadata.
   "org": "Personal"
 }
 ```
-
-**Errors**
-
-- `device_authorization_failed` — the authorization request was rejected.
-- `token_exchange_failed` — the request was not approved, or the code expired.
 
 ---
 

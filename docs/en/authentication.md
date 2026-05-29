@@ -12,11 +12,26 @@ plain-text file.
 rimo auth login
 ```
 
-1. `rimo` prints a one-time user code and a verification URL.
-2. Press Enter to open the URL in your browser (or open it manually).
-3. Approve the request in the browser.
-4. The access and refresh tokens are saved securely by your OS credential store; an
-   account alias is registered in `~/.config/rimo/config.yaml` and set as active.
+1. `rimo` opens your browser to authorize this CLI.
+2. Sign in if needed and approve the request.
+3. The access and refresh tokens are saved securely by your OS credential
+   store; an account alias is registered in `~/.config/rimo/config.yaml`
+   and set as active.
+
+### No browser available
+
+On machines without a usable browser (SSH session, container, CI runner),
+add `--no-browser`:
+
+```bash
+rimo auth login --no-browser
+```
+
+1. `rimo` prints a URL.
+2. Open the URL on any other device with a browser. Sign in if needed and
+   approve the request; the page shows a short code.
+3. Paste the code back into your terminal.
+4. Tokens are stored as above.
 
 ## Multiple accounts
 
