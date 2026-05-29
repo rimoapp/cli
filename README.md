@@ -2,7 +2,7 @@
 
 [English](README.en.md) | [日本語](README.md)
 
-`rimo` は [Rimo Voice](https://rimo.app) プラットフォームのコマンドラインインターフェースです。Rimo Voice API をラップしており、ターミナルから会議メモの検索・取得・質問ができます。
+`rimo` は [Rimo Voice](https://rimo.app) プラットフォームのコマンドラインインターフェースです。ターミナルから会議メモの検索・取得・質問ができます。
 
 人間と AI エージェント（Claude Code、Codex など）の両方のために作られています。すべてのコマンドはデフォルトで JSON を出力し、`--help` で挙動を確認できるため、スクリプトやエージェントのワークフローにそのまま組み込めます。
 
@@ -14,7 +14,7 @@
 curl -fsSL https://rimo.app/cli/install.sh | sh
 ```
 
-これにより最新の `rimo` バイナリが `~/.local/bin` にインストールされます（`sudo` は不要）。その他のオプション、バージョン固定、アップグレード、アンインストールについては [インストール](docs/ja/installation.md) を参照してください。
+これにより最新の `rimo` バイナリが `~/.local/bin` にインストールされます。その他のオプション、アップグレード、アンインストールについては [インストール](docs/ja/installation.md) を参照してください。
 
 ## クイックスタート
 
@@ -35,7 +35,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 | コマンド | 説明 |
 |---------|-------------|
-| [`rimo auth login`](docs/ja/commands.md#rimo-auth-login)   | OAuth デバイス認可グラントで認証 |
+| [`rimo auth login`](docs/ja/commands.md#rimo-auth-login)   | ブラウザベースのログインで認証 |
 | [`rimo auth logout`](docs/ja/commands.md#rimo-auth-logout) | トークンを失効させ、保存されたアカウントを削除 |
 | [`rimo auth status`](docs/ja/commands.md#rimo-auth-status) | 認証済みアカウントを表示 |
 | [`rimo auth switch`](docs/ja/commands.md#rimo-auth-switch) | アクティブなアカウントを切り替え |
@@ -52,7 +52,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 ```
 --account <alias>    使用するアカウントのエイリアス（設定の default_account を上書き）
---token <string>     API トークン（保存された認証情報を上書き。RIMO_TOKEN 環境変数を推奨）
+--token <string>     API トークン（保存された認証情報を上書き）
 --fields <spec>      含めるフィールド: "" (すべて)、"compact"、または "field1,field2"
 --excludes <list>    出力から除外するフィールド（カンマ区切り）
 --dry-run            副作用なしでコマンドをシミュレート（書き込み系のみ）
@@ -60,8 +60,8 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 ## ドキュメント
 
-- [インストール](docs/ja/installation.md) — インストール、バージョン固定、アップグレード、アンインストール
-- [認証](docs/ja/authentication.md) — デバイスグラントログイン、アカウント、CI 向けの `RIMO_TOKEN`
+- [インストール](docs/ja/installation.md) — インストール、アップグレード、アンインストール
+- [認証](docs/ja/authentication.md) — ブラウザベースのログインとアカウント
 - [コマンド](docs/ja/commands.md) — フラグと例を含む完全なリファレンス
 - [設定](docs/ja/configuration.md) — `config.yaml`、認証情報の保存、環境変数
 - [出力とエラー](docs/ja/output-and-errors.md) — JSON 設計、`--fields`/`--excludes`、終了コード
@@ -72,7 +72,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 `rimo` は AI コーディングエージェント（Claude Code、Codex、Cursor など）への組み込み手段を 2 つ提供しています。両者は併用できます。
 
-### MCP サーバー（型付きツール、MCP 対応クライアントでは推奨）
+### MCP サーバー（型付きツール、MCP 対応クライアント向け）
 
 `rimo mcp` を起動すると、CLI が [Model Context Protocol](https://modelcontextprotocol.io) の型付きツールとして公開され、エージェントは CLI に shell out して JSON を解析する必要がありません。Claude Code には `.mcp.json` にエントリを追加するだけ:
 
@@ -112,4 +112,4 @@ Codex やその他のエージェントでは、セッション開始時に [`sk
 
 ## ライセンス
 
-本プロジェクトはオープンソースではありません。Rimo CLI の利用は [Rimo 利用規約](https://rimo.app/terms) に従います。[NOTICE](NOTICE.md) を参照してください。
+本プロジェクトはオープンソースではありません。Rimo CLI の利用は [Rimo 利用規約](https://rimo.app/policies/terms) に従います。[NOTICE](NOTICE.md) を参照してください。

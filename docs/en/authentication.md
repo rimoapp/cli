@@ -2,9 +2,9 @@
 
 [English](../en/authentication.md) | [日本語](../ja/authentication.md)
 
-`rimo` authenticates with Rimo Voice using the **OAuth 2.0 Device Authorization
-Grant** — the same browser-based flow as `gh auth login`. Tokens are stored
-securely by your operating system's credential store, never in a plain-text file.
+`rimo` authenticates with Rimo Voice through a browser-based login. Tokens are
+stored securely by your operating system's credential store, never in a
+plain-text file.
 
 ## Logging in
 
@@ -33,27 +33,13 @@ rimo auth logout                  # remove the active account (or pass --account
 See the [commands reference](commands.md#authentication) for full flags and
 resolution rules.
 
-## Headless / CI authentication
-
-In CI or any non-interactive environment, skip the browser flow by setting the
-`RIMO_TOKEN` environment variable to an API token:
-
-```bash
-export RIMO_TOKEN=your_api_token
-rimo note list
-```
-
-When set, `RIMO_TOKEN` takes priority over `--account` and the configured default
-account. The token is used as-is — no refresh is attempted.
-
 ## Token resolution priority
 
 When a command needs a token, `rimo` resolves it in this order:
 
-1. `RIMO_TOKEN` environment variable (used as-is, never refreshed).
-2. `--account <alias>` flag → config lookup → stored credentials.
-3. `default_account` from config → stored credentials.
-4. If none resolve, the command exits with an authentication error (exit code 2)
+1. `--account <alias>` flag → config lookup → stored credentials.
+2. `default_account` from config → stored credentials.
+3. If none resolve, the command exits with an authentication error (exit code 2)
    and the message *"Run `rimo auth login`"*.
 
 ## Where credentials live

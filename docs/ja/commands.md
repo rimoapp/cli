@@ -16,7 +16,7 @@
 | フラグ | 説明 |
 |------|-------------|
 | `--account` | 使用するアカウントのエイリアス（設定の `default_account` を上書き） |
-| `--token` | API トークン（保存された認証情報を上書き。`RIMO_TOKEN` 環境変数を推奨） |
+| `--token` | API トークン（保存された認証情報を上書き） |
 | `--fields` | 含めるフィールド: `""` (すべて)、`"compact"`、または `"f1,f2"` |
 | `--excludes` | 出力から除外するフィールド（カンマ区切り） |
 | `--dry-run` | 副作用なしでコマンドをシミュレート（書き込み系のみ） |
@@ -27,7 +27,7 @@
 
 ### `rimo auth login`
 
-OAuth 2.0 デバイス認可グラントを使って Rimo に認証します。
+ブラウザベースのログインで Rimo に認証します。
 
 **構文**
 
@@ -214,24 +214,24 @@ rimo note list [--attended] [--page-size <int>] [--page-token <string>]
 
 **デフォルトモード。** 認証済みユーザーが作成したメモを一覧表示します。
 
-**`--attended` モード。** 認証済みユーザーが参加したメモを一覧表示します
-（カーソルページネーション）。
+**`--attended` モード。** 認証済みユーザーが参加したメモを一覧表示します。
+
+どちらのモードも `--page-size` と `--page-token` でカーソルページネーションできます。
 
 **フラグ**
 
 | フラグ | 型 | デフォルト | 説明 |
 |------|------|---------|-------------|
 | `--attended` | bool | `false` | 参加したメモを一覧表示 |
-| `--page-size` | int | `0` | ページサイズ — **`--attended` と併用時のみ有効** |
-| `--page-token` | string | `""` | 前回の呼び出しのカーソル — **`--attended` と併用時のみ有効** |
-
-`--attended` なしで `--page-size` または `--page-token` を渡すと検証エラーになります。
+| `--page-size` | int | `0` | ページサイズ（`0` の場合はサーバー側のデフォルトに従う） |
+| `--page-token` | string | `""` | 前回の呼び出しの `next_page_token` |
 
 **例**
 
 ```bash
 rimo note list
 rimo note list --fields id,title,created_at
+rimo note list --page-size 50
 rimo note list --attended --page-size 50
 rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
 ```

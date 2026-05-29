@@ -16,7 +16,7 @@ human-facing commands print plain text on success (errors are always JSON):
 | Flag | Description |
 |------|-------------|
 | `--account` | Account alias to use (overrides `default_account` in config) |
-| `--token` | API token (overrides saved credentials; prefer the `RIMO_TOKEN` env var) |
+| `--token` | API token (overrides saved credentials) |
 | `--fields` | Fields to include: `""` (all), `"compact"`, or `"f1,f2"` |
 | `--excludes` | Comma-separated fields to exclude from output |
 | `--dry-run` | Simulate the command without side effects (writes only) |
@@ -27,7 +27,7 @@ human-facing commands print plain text on success (errors are always JSON):
 
 ### `rimo auth login`
 
-Authenticate with Rimo using the OAuth 2.0 Device Authorization Grant.
+Authenticate with Rimo through a browser-based login.
 
 **Syntax**
 
@@ -215,25 +215,24 @@ rimo note list [--attended] [--page-size <int>] [--page-token <string>]
 
 **Default mode.** Lists notes created by the authenticated user.
 
-**`--attended` mode.** Lists notes the authenticated user participated in
-(cursor-paginated).
+**`--attended` mode.** Lists notes the authenticated user participated in.
+
+Both modes are cursor-paginated via `--page-size` and `--page-token`.
 
 **Flags**
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--attended` | bool | `false` | List notes you participated in |
-| `--page-size` | int | `0` | Page size — **only valid with `--attended`** |
-| `--page-token` | string | `""` | Cursor from a previous call — **only valid with `--attended`** |
-
-Passing `--page-size` or `--page-token` without `--attended` returns a validation
-error.
+| `--page-size` | int | `0` | Page size (`0` lets the server pick the default) |
+| `--page-token` | string | `""` | Cursor from a previous call's `next_page_token` |
 
 **Examples**
 
 ```bash
 rimo note list
 rimo note list --fields id,title,created_at
+rimo note list --page-size 50
 rimo note list --attended --page-size 50
 rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
 ```

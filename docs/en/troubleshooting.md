@@ -35,13 +35,12 @@ quarantined, so you usually only hit this with a manual browser download.)
 
 ## `rimo auth login` does not open a browser
 
-`rimo auth login` uses the OAuth device flow and prints a URL and a code. If no
-browser opens automatically, open the printed URL manually and enter the code.
-On headless/CI machines, set `RIMO_TOKEN` instead of logging in interactively.
+`rimo auth login` prints a URL and a code. If no browser opens automatically,
+open the printed URL manually and enter the code.
 
 ## Login code expires or fails
 
-The device code is short-lived. Re-run `rimo auth login` to get a fresh code,
+The login code is short-lived. Re-run `rimo auth login` to get a fresh code,
 and complete the browser step promptly.
 
 ## Behind a proxy or firewall

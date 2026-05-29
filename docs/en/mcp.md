@@ -4,18 +4,16 @@
 
 `rimo mcp` runs the [Model Context Protocol](https://modelcontextprotocol.io) server bundled inside the `rimo` binary. Once it is wired into your AI agent, the agent can list your notes, fetch transcripts, search by keyword or meaning, and ask natural-language questions across your notes — all using typed tools rather than shelling out to the CLI and parsing JSON.
 
-> **Skill vs. MCP — which should you use?** Both ship with `rimo`. The [agent skill](../../skills/rimo-cli/SKILL.md) is a markdown operating manual any agent can read and follow by running shell commands. `rimo mcp` is the typed-tool alternative — more reliable for MCP-capable clients (Claude Code, Cursor, Codex with MCP support). They can coexist; if your agent supports MCP, prefer it.
+> **Skill vs. MCP — which should you use?** Both ship with `rimo`. The [agent skill](../../skills/rimo-cli/SKILL.md) is a markdown operating manual any agent can read and follow by running shell commands. `rimo mcp` is the typed-tool alternative for MCP-capable clients (Claude Code, Cursor, Codex with MCP support). They can coexist; pick whichever fits your agent.
 
 ---
 
 ## 1. Prerequisites
 
 1. **`rimo` installed and on `$PATH`.** Confirm with `rimo version`. If not installed yet, see [Installation](installation.md).
-2. **A logged-in account**, either:
-   - `rimo auth login` — opens a browser; the token is stored in your OS keyring.
-   - `RIMO_TOKEN` environment variable — useful for CI and containers where no keyring is available.
-
-The MCP server reuses the same authentication as the CLI; there is no separate MCP login.
+2. **A logged-in account.** Run `rimo auth login` to authenticate through your
+   browser; the token is stored in your OS keyring. The MCP server reuses the
+   same authentication as the CLI — there is no separate MCP login.
 
 ---
 
@@ -32,23 +30,6 @@ Add a `rimo` entry to your `.mcp.json`. Project-local (`./.mcp.json`, committed 
       "type": "stdio",
       "command": "rimo",
       "args": ["mcp"]
-    }
-  }
-}
-```
-
-For headless / CI use, set the token via an environment block instead of relying on the keyring:
-
-```json
-{
-  "mcpServers": {
-    "rimo": {
-      "type": "stdio",
-      "command": "rimo",
-      "args": ["mcp"],
-      "env": {
-        "RIMO_TOKEN": "your-token-here"
-      }
     }
   }
 }
@@ -145,19 +126,7 @@ Every Rimo API tool accepts these arguments in addition to its operation-specifi
 
 ---
 
-## 6. Headless / CI use
-
-When there's no keyring (CI, containers, ephemeral sandboxes), set `RIMO_TOKEN` in the launch environment. The MCP server uses it as-is and skips refresh:
-
-```bash
-RIMO_TOKEN="<your-token>" rimo mcp
-```
-
-In an MCP client config, set it via the `env` block (see the Claude Code section above for the `.mcp.json` shape).
-
----
-
-## 7. Authentication errors
+## 6. Authentication errors
 
 If a tool call returns an error mentioning auth, the most common causes are:
 
@@ -169,7 +138,7 @@ If a tool call returns an error mentioning auth, the most common causes are:
 
 ---
 
-## 8. Troubleshooting
+## 7. Troubleshooting
 
 **The Rimo tools never appear in the tool picker.**
 Verify `rimo` is on `$PATH` for the user account running the MCP client. Try `which rimo` from the same shell environment the client launches from. If the client launches from a GUI app (not a shell), it may not see `~/.local/bin`; either add `rimo` to a shell-agnostic location (`/usr/local/bin`) or hard-code the absolute path in `.mcp.json`.

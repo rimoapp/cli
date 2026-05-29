@@ -60,7 +60,7 @@ Or include the contents of this file in the agent's system/initial prompt. Any a
 Make sure `rimo` is installed and you have an authenticated session:
 
 ```bash
-# Install (no sudo required)
+# Install
 curl -fsSL https://rimo.app/cli/install.sh | sh
 
 # Authenticate — opens your browser, token is saved securely in the OS keyring
@@ -69,8 +69,6 @@ rimo auth login
 # Verify
 rimo auth status
 ```
-
-For headless/CI environments, see the alternative `RIMO_TOKEN` flow in §2 below.
 
 ---
 
@@ -110,27 +108,14 @@ If `rimo auth login` takes more than ~10 minutes the code expires (`token_exchan
 
 When to instead ask the user to run it themselves:
 
-- **Headless / CI / no browser** — use the `RIMO_TOKEN` fallback below instead.
 - **Non-interactive agent run** (no human attached to relay the stderr code) — `rimo auth login` will hang. Bail out and tell the user.
 - **User declines** — never push.
 
-### Alternative: `RIMO_TOKEN` env var (headless / CI)
-
-If the user already has a token provisioned for their environment (typically CI), they can set it as an environment variable:
-
-```bash
-export RIMO_TOKEN=...      # used as-is, no refresh
-rimo note list
-```
-
-Use this only when `rimo auth login` is not viable (headless, CI, no browser). Do not try to mint a token yourself — if the user does not already have one, the right path is `rimo auth login`.
-
 ### Token resolution order (first hit wins)
 
-1. `RIMO_TOKEN` env var
-2. `--account <alias>` flag → keyring
-3. `default_account` in `~/.config/rimo/config.yaml` → keyring
-4. Exit 2 with `auth_error` → run `rimo auth login` (or ask the user to)
+1. `--account <alias>` flag → keyring
+2. `default_account` in `~/.config/rimo/config.yaml` → keyring
+3. Exit 2 with `auth_error` → run `rimo auth login` (or ask the user to)
 
 ### If already authenticated
 
@@ -180,13 +165,13 @@ Parse `code` first; do not try to interpret `message` for control flow.
 
 ```bash
 rimo note list                                  # notes owned by the authenticated user
-rimo note list --attended                       # notes the user attended (cursor-paginated)
-rimo note list --attended --page-size 50
+rimo note list --attended                       # notes the user attended
+rimo note list --page-size 50
 rimo note list --attended --page-size 50 --page-token "<cursor>"
 rimo note list --fields id,title,created_at     # smaller payload
 ```
 
-- `--page-size` / `--page-token` are **only valid with `--attended`** — passing them in the default mode is a `validation_error`.
+- Both modes are cursor-paginated via `--page-size` / `--page-token`.
 - Response shape: `{ "notes": [...], "next_page_token": "..." }`. Loop until `next_page_token` is empty when you need everything.
 
 ### `rimo note get`
@@ -293,7 +278,7 @@ The following commands are planned but not yet available — support is under ac
 | `--excludes` | Drop noisy fields (e.g. `transcript,document_markdown`) — applied after `--fields` |
 | `--dry-run`  | Simulate a write — currently no write commands are implemented, so this is mainly future-proofing |
 | `--account`  | Override default account                                                  |
-| `--token`    | Inline token (prefer `RIMO_TOKEN` env var so it doesn't show up in shell history) |
+| `--token`    | Inline token (overrides saved credentials) |
 
 ```bash
 rimo note list --fields compact

@@ -4,7 +4,7 @@ The Rimo CLI (`rimo`) is an official binary distributed for use with the
 [Rimo Voice](https://rimo.app) service. **This is not an open-source project.**
 
 Use of the Rimo CLI is governed by the Rimo Terms of Service:
-https://rimo.app/terms
+https://rimo.app/policies/terms
 
 All rights reserved. Except as permitted by the Terms of Service or applicable
 law, you may not redistribute, modify, decompile, or reverse engineer the

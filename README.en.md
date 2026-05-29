@@ -2,7 +2,7 @@
 
 [English](README.en.md) | [日本語](README.md)
 
-`rimo` is the command-line interface for the [Rimo Voice](https://rimo.app) platform. It wraps the Rimo Voice API so you can search, fetch, and ask questions about your meeting notes from the terminal.
+`rimo` is the command-line interface for the [Rimo Voice](https://rimo.app) platform. Search, fetch, and ask questions about your meeting notes from the terminal.
 
 Built for both humans and AI agents (Claude Code, Codex, etc.): every command speaks JSON by default and exposes its behavior through `--help`, so it slots cleanly into scripts and agent workflows.
 
@@ -14,7 +14,7 @@ Built for both humans and AI agents (Claude Code, Codex, etc.): every command sp
 curl -fsSL https://rimo.app/cli/install.sh | sh
 ```
 
-This installs the latest `rimo` binary to `~/.local/bin` (no `sudo` required). See [Installation](docs/en/installation.md) for other options, version pinning, upgrades, and uninstall.
+This installs the latest `rimo` binary to `~/.local/bin`. See [Installation](docs/en/installation.md) for other options, upgrades, and uninstall.
 
 ## Quickstart
 
@@ -35,7 +35,7 @@ All commands print JSON to stdout by default. ([Why, and the exceptions →](doc
 
 | Command | Description |
 |---------|-------------|
-| [`rimo auth login`](docs/en/commands.md#rimo-auth-login)   | Authenticate via OAuth Device Authorization Grant |
+| [`rimo auth login`](docs/en/commands.md#rimo-auth-login)   | Authenticate via browser-based login |
 | [`rimo auth logout`](docs/en/commands.md#rimo-auth-logout) | Revoke tokens and remove a saved account |
 | [`rimo auth status`](docs/en/commands.md#rimo-auth-status) | Show authenticated accounts |
 | [`rimo auth switch`](docs/en/commands.md#rimo-auth-switch) | Switch the active account |
@@ -52,7 +52,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 ```
 --account <alias>    Account alias to use (overrides default_account in config)
---token <string>     API token (overrides saved credentials; prefer the RIMO_TOKEN env var)
+--token <string>     API token (overrides saved credentials)
 --fields <spec>      Fields to include: "" (all), "compact", or "field1,field2"
 --excludes <list>    Comma-separated fields to exclude from output
 --dry-run            Simulate the command without side effects (writes only)
@@ -60,8 +60,8 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 ## Documentation
 
-- [Installation](docs/en/installation.md) — install, pin a version, upgrade, uninstall
-- [Authentication](docs/en/authentication.md) — device-grant login, accounts, `RIMO_TOKEN` for CI
+- [Installation](docs/en/installation.md) — install, upgrade, uninstall
+- [Authentication](docs/en/authentication.md) — browser-based login and accounts
 - [Commands](docs/en/commands.md) — full reference with flags and examples
 - [Configuration](docs/en/configuration.md) — `config.yaml`, credential storage, environment variables
 - [Output & errors](docs/en/output-and-errors.md) — JSON design, `--fields`/`--excludes`, exit codes
@@ -72,7 +72,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 `rimo` supports two complementary ways to plug into AI coding agents (Claude Code, Codex, Cursor, and others):
 
-### MCP server (typed tools, recommended for MCP-capable clients)
+### MCP server (typed tools, for MCP-capable clients)
 
 Run `rimo mcp` to expose the CLI as typed [Model Context Protocol](https://modelcontextprotocol.io) tools — agents call them natively without shelling out and parsing JSON. Wire it into Claude Code with a `.mcp.json` entry:
 
@@ -112,4 +112,4 @@ To report a security vulnerability, see our [Security Policy](SECURITY.md) — p
 
 ## License
 
-This is not an open-source project. Use of the Rimo CLI is governed by the [Rimo Terms of Service](https://rimo.app/terms); see [NOTICE](NOTICE.md).
+This is not an open-source project. Use of the Rimo CLI is governed by the [Rimo Terms of Service](https://rimo.app/policies/terms); see [NOTICE](NOTICE.md).
