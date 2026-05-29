@@ -28,18 +28,19 @@ Claude Code auto-discovers skills placed in either of these locations:
 
 ```bash
 # Project-local (recommended for team-shared usage — commit to your repo)
-mkdir -p .claude/skills
-cp -r skills/rimo-cli .claude/skills/
+mkdir -p .claude/skills/rimo-cli
+curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+  -o .claude/skills/rimo-cli/SKILL.md
 
 # Or user-global (available across all your projects)
-mkdir -p ~/.claude/skills
-cp -r skills/rimo-cli ~/.claude/skills/
+mkdir -p ~/.claude/skills/rimo-cli
+curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+  -o ~/.claude/skills/rimo-cli/SKILL.md
 ```
 
 Then just ask naturally in Claude Code:
 
 > "Summarize my Rimo notes from this week"
-> "What did we decide about pricing in our last meeting?"
 > "Find my Rimo notes about the Q3 release plan"
 
 Claude Code loads the skill automatically when it detects a Rimo-related request.
@@ -50,7 +51,7 @@ For agents that don't auto-load skills, point them at this file at the start of 
 
 ```bash
 # Hand the skill to the agent as context
-cat skills/rimo-cli/SKILL.md
+cat ~/.claude/skills/rimo-cli/SKILL.md
 ```
 
 Or include the contents of this file in the agent's system/initial prompt. Any agent that can run shell commands and read documentation can follow the operating manual below.

@@ -6,7 +6,7 @@
 
 Built for both humans and AI agents (Claude Code, Codex, etc.): every command speaks JSON by default and exposes its behavior through `--help`, so it slots cleanly into scripts and agent workflows.
 
-> **Official distribution repository.** This repository hosts the released `rimo` binaries and their documentation; the CLI's source code is not published here. Download binaries only from [Releases](https://github.com/rimoapp/cli/releases) and verify them against the published `checksums.txt` (see [Installation](docs/en/installation.md)).
+> **Official distribution repository.** Download binaries only from [Releases](https://github.com/rimoapp/cli/releases) and verify them against the published `checksums.txt` (see [Installation](docs/en/installation.md)).
 
 ## Install
 
@@ -74,7 +74,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 ### MCP server (typed tools, for MCP-capable clients)
 
-Run `rimo mcp` to expose the CLI as typed [Model Context Protocol](https://modelcontextprotocol.io) tools — agents call them natively without shelling out and parsing JSON. Wire it into Claude Code with a `.mcp.json` entry:
+Run `rimo mcp` to expose the CLI as typed [Model Context Protocol](https://modelcontextprotocol.io) tools. Add a `rimo` entry to your Claude Code `.mcp.json`:
 
 ```json
 {
@@ -84,9 +84,12 @@ Run `rimo mcp` to expose the CLI as typed [Model Context Protocol](https://model
 }
 ```
 
-Restart your client and ask naturally: *"Summarize my Rimo notes from this week"*, *"What did we decide about pricing?"*, *"Find Rimo notes about the Q3 release plan"*.
+Restart your client and ask naturally:
 
-Full setup for Claude Code, Codex, Cursor, and other MCP clients, plus the tool list and example prompts: [MCP server](docs/en/mcp.md).
+- *"Summarize my Rimo notes from this week"*
+- *"Find Rimo notes about the Q3 release plan"*
+
+Full setup for Claude Code, Codex, Cursor, and other MCP clients: [MCP server](docs/en/mcp.md).
 
 ### Agent skill (works with any agent that runs shell commands)
 
@@ -94,13 +97,17 @@ Full setup for Claude Code, Codex, Cursor, and other MCP clients, plus the tool 
 
 ```bash
 # Project-local (commit alongside your repo)
-mkdir -p .claude/skills && cp -r skills/rimo-cli .claude/skills/
+mkdir -p .claude/skills/rimo-cli
+curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+  -o .claude/skills/rimo-cli/SKILL.md
 
 # Or user-global
-mkdir -p ~/.claude/skills && cp -r skills/rimo-cli ~/.claude/skills/
+mkdir -p ~/.claude/skills/rimo-cli
+curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+  -o ~/.claude/skills/rimo-cli/SKILL.md
 ```
 
-For Codex or other agents, point them at [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) at the start of a session (e.g. `cat skills/rimo-cli/SKILL.md`) or include its contents in the agent's system prompt.
+For Codex or other agents, point them at the installed file at the start of a session (e.g. `cat ~/.claude/skills/rimo-cli/SKILL.md`) or include its contents in the agent's system prompt.
 
 ## Support
 

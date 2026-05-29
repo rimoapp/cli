@@ -6,7 +6,7 @@
 
 人間と AI エージェント（Claude Code、Codex など）の両方のために作られています。すべてのコマンドはデフォルトで JSON を出力し、`--help` で挙動を確認できるため、スクリプトやエージェントのワークフローにそのまま組み込めます。
 
-> **公式配布リポジトリです。** このリポジトリはリリース済みの `rimo` バイナリとそのドキュメントを提供します。CLI のソースコードはここでは公開していません。バイナリは [Releases](https://github.com/rimoapp/cli/releases) からのみ取得し、公開されている `checksums.txt` で検証してください（[インストール](docs/ja/installation.md) を参照）。
+> **公式配布リポジトリです。** バイナリは [Releases](https://github.com/rimoapp/cli/releases) からのみ取得し、公開されている `checksums.txt` で検証してください（[インストール](docs/ja/installation.md) を参照）。
 
 ## インストール
 
@@ -74,7 +74,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 ### MCP サーバー（型付きツール、MCP 対応クライアント向け）
 
-`rimo mcp` を起動すると、CLI が [Model Context Protocol](https://modelcontextprotocol.io) の型付きツールとして公開され、エージェントは CLI に shell out して JSON を解析する必要がありません。Claude Code には `.mcp.json` にエントリを追加するだけ:
+`rimo mcp` を起動すると、CLI が [Model Context Protocol](https://modelcontextprotocol.io) の型付きツールとして公開されます。Claude Code の `.mcp.json` に `rimo` エントリを追加してください:
 
 ```json
 {
@@ -84,9 +84,12 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 }
 ```
 
-クライアントを再起動し、自然言語で問いかけてください: *「今週の Rimo のメモを要約して」*、*「料金について何を決めた?」*、*「Q3 リリースプランに関する Rimo のメモを探して」*。
+クライアントを再起動し、自然言語で問いかけてください:
 
-Claude Code、Codex、Cursor などの完全なセットアップ、ツール一覧、問いかけ例: [MCP サーバー](docs/ja/mcp.md)。
+- *「今週の Rimo のメモを要約して」*
+- *「Q3 リリースプランに関する Rimo のメモを探して」*
+
+Claude Code、Codex、Cursor など他の MCP クライアントの完全なセットアップ: [MCP サーバー](docs/ja/mcp.md)。
 
 ### エージェント用スキル（シェルコマンドを実行できる任意のエージェント向け）
 
@@ -94,13 +97,17 @@ Claude Code、Codex、Cursor などの完全なセットアップ、ツール一
 
 ```bash
 # プロジェクト単位（リポジトリと一緒にコミット）
-mkdir -p .claude/skills && cp -r skills/rimo-cli .claude/skills/
+mkdir -p .claude/skills/rimo-cli
+curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+  -o .claude/skills/rimo-cli/SKILL.md
 
 # またはユーザー単位（全プロジェクトで利用可能）
-mkdir -p ~/.claude/skills && cp -r skills/rimo-cli ~/.claude/skills/
+mkdir -p ~/.claude/skills/rimo-cli
+curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+  -o ~/.claude/skills/rimo-cli/SKILL.md
 ```
 
-Codex やその他のエージェントでは、セッション開始時に [`skills/rimo-cli/SKILL.md`](skills/rimo-cli/SKILL.md) を読み込ませる（例: `cat skills/rimo-cli/SKILL.md`）か、内容をシステムプロンプトに含めてください。
+Codex やその他のエージェントでは、セッション開始時にインストールしたファイルを読み込ませる（例: `cat ~/.claude/skills/rimo-cli/SKILL.md`）か、内容をシステムプロンプトに含めてください。
 
 ## サポート
 
