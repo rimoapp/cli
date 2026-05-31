@@ -51,30 +51,23 @@ rimo note list --excludes transcript,document_markdown
 | コード | 意味 |
 |------|---------|
 | 0 | 成功 |
-| 1 | 一般的なエラー |
-| 2 | 認証 / 権限エラー |
-| 3 | 見つからない |
-| 4 | 検証エラー（不正なフラグ/引数） |
+| 1 | エラー |
 
 終了コードは成功か失敗かを判断する信頼できるシグナルです。出力をパースするのではなく、
 スクリプトでは終了コードを確認してください。
 
 ## エラー形式
 
-エラーは JSON として stdout に出力され、ゼロ以外の終了コードを伴います:
+エラーは JSON として stdout に出力され、終了コード 1 で終了します:
 
 ```json
 {
-  "code": "not_found",
-  "message": "note not found: note_abc123"
+  "code": "error",
+  "message": "unknown flag: --bogus"
 }
 ```
 
-| コード | 終了 | 発生条件 |
-|------|------|------|
-| `error` | 1 | 一般的なエラー（ネットワーク、パース、予期しないもの） |
-| `auth_error` | 2 | トークンが欠落/無効。`rimo auth login` を実行 |
-| `permission_denied` | 2 | トークンに必要なスコープがない（`details` 内に `scope_required`） |
-| `not_found` | 3 | リソースが存在しないかアクセスできない |
-| `validation_error` | 4 | 不正なフラグまたは引数 |
-| `unknown_command` | 1 | タイプミス。最も近い候補は `details.suggestion` を確認 |
+| フィールド | 説明 |
+|-------|-------------|
+| `code` | 機械可読のエラーコード。現状は常に `error`。 |
+| `message` | 失敗内容を表す人間向けメッセージ（検証メッセージや API ステータスなど）。 |

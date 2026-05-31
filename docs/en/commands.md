@@ -211,7 +211,7 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # email + org disambi
 - Notes shared with you by URL only (not via ownership or participation) do **not**
   appear in any list, but you can still fetch one directly with
   `rimo note get <id>` if you have the ID.
-- `rimo note get` on a note you cannot access returns `not_found` (exit 3) rather
+- `rimo note get` on a note you cannot access returns a not-found error rather
   than revealing that the note exists.
 
 ### `rimo note list`
@@ -312,9 +312,7 @@ rimo note get note_abc123 --fields id,title        # filter the JSON metadata
 
 **Errors**
 
-- `not_found` (exit 3) — note ID does not exist or you do not have access.
-- `permission_denied` (exit 2) — token lacks the `notes:read` scope.
-- `validation_error` (exit 4) — incompatible flag combination.
+See [Output & errors](output-and-errors.md) for the error JSON shape and exit code.
 
 ---
 
@@ -370,9 +368,7 @@ rimo note search "release" --mode=filter | jq '.notes[].id'
 
 **Errors**
 
-- `validation_error` (exit 4) — empty query, invalid `--mode`/`--content-type`, or
-  filter-only flags with `--mode=semantic`.
-- `permission_denied` (exit 2) — token lacks the `notes:read` scope.
+See [Output & errors](output-and-errors.md) for the error JSON shape and exit code.
 
 ---
 
@@ -422,8 +418,7 @@ rimo note ask "今週の議事録を要約して"
 
 **Errors**
 
-- `validation_error` (exit 4) — empty question.
-- `permission_denied` (exit 2) — token lacks the `notes:read` scope.
+See [Output & errors](output-and-errors.md) for the error JSON shape and exit code.
 
 ---
 
@@ -489,11 +484,7 @@ sudo rimo upgrade --use-sudo           # retry under sudo for root-owned install
 
 **Errors**
 
-- `permission_denied` (exit 2) — the install path is not writable and `--use-sudo`
-  was not passed. `details.suggested_command` is `sudo rimo upgrade --use-sudo`.
-- General `error` (exit 1) — dev-build refusal, version-check failure (network or
-  rate limit), download failure (asset not found for OS/arch, network), checksum
-  mismatch, or extract failure.
+See [Output & errors](output-and-errors.md) for the error JSON shape and exit code.
 
 **Startup update notice**
 

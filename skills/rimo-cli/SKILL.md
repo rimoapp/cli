@@ -118,7 +118,7 @@ When to instead ask the user to run it themselves:
 
 1. `--account <alias>` flag → keyring
 2. `default_account` in `~/.config/rimo/config.yaml` → keyring
-3. Exit 2 with `auth_error` → run `rimo auth login` (or ask the user to)
+3. Otherwise the command exits 1 with a JSON error to stdout — run `rimo auth login` (or ask the user to)
 
 ### If already authenticated
 
@@ -147,20 +147,16 @@ Everything you pipe to `jq` is safe **except** the plain-text exceptions above. 
 
 ## 4. Error format
 
+Any failure writes a JSON error to **stdout** and exits with code 1:
+
 ```json
-{ "code": "not_found", "message": "note not found: note_abc123" }
+{ "code": "error", "message": "unknown flag: --bogus" }
 ```
 
-| Code                | Exit | Meaning                                                     |
-|---------------------|------|-------------------------------------------------------------|
-| `error`             | 1    | Generic (network, parse, unexpected)                        |
-| `auth_error`        | 2    | Token missing/invalid — ask user to `rimo auth login`       |
-| `permission_denied` | 2    | Token lacks required scope (see `details.scope_required`)   |
-| `not_found`         | 3    | Resource doesn't exist or you can't see it                  |
-| `validation_error`  | 4    | Bad flag/arg combo                                          |
-| `unknown_command`   | 1    | Typo — check `details.suggestion`                           |
-
-Parse `code` first; do not try to interpret `message` for control flow.
+`code` is currently always `error`. Inspect `message` for the cause
+(validation text, API status, etc.) and surface it to the user. Treat the
+exit code (0 vs non-zero) as the reliable success/failure signal — do not
+parse `message` for control flow.
 
 ## 5. Commands you can use today
 
@@ -193,7 +189,7 @@ rimo note get <note_id> --list-documents       # JSON list of attached documents
 rimo note get <note_id> --document-id <doc_id> # plain text: specific document markdown
 ```
 
-Mutually exclusive groups (combining them is a `validation_error`):
+Mutually exclusive groups (combining them is rejected with an error):
 
 - `--list-documents` / `--document-id` ⛔ `--transcript` / `--document` / `--full`
 - `--list-documents` ⛔ `--document-id`
@@ -226,7 +222,7 @@ Flags:
 | `--per`          | filter   | Page size (defaults to 10).                                             |
 | `--content-type` | filter   | Restrict to `all`/`transcripts`/`headings`/`annotations`/`title`/`document`. |
 
-Passing a filter-only flag with `--mode=semantic` is a `validation_error`. Filter mode populates `snippet`, `channel_id`, `owner_name`, `held_at`, `created_at` on each hit; semantic mode returns only `id` and `title` per hit (the semantic backend exposes less metadata). A `Fetch a note:` hint is written to **stderr** so stdout stays pipe-clean for `| jq`.
+Passing a filter-only flag with `--mode=semantic` is rejected with an error. Filter mode populates `snippet`, `channel_id`, `owner_name`, `held_at`, `created_at` on each hit; semantic mode returns only `id` and `title` per hit (the semantic backend exposes less metadata). A `Fetch a note:` hint is written to **stderr** so stdout stays pipe-clean for `| jq`.
 
 ### `rimo note ask`
 

@@ -50,30 +50,23 @@ need (`--fields id,title`) to keep responses small and cheap to parse.
 | Code | Meaning |
 |------|---------|
 | 0 | Success |
-| 1 | General error |
-| 2 | Authentication / permission error |
-| 3 | Not found |
-| 4 | Validation error (bad flags/args) |
+| 1 | Error |
 
 The exit code is the reliable signal of success vs failure — check it in scripts
 rather than parsing output.
 
 ## Error format
 
-Any error is written as JSON to stdout and accompanied by a non-zero exit code:
+Any error is written as JSON to stdout and the process exits with code 1:
 
 ```json
 {
-  "code": "not_found",
-  "message": "note not found: note_abc123"
+  "code": "error",
+  "message": "unknown flag: --bogus"
 }
 ```
 
-| Code | Exit | When |
-|------|------|------|
-| `error` | 1 | Generic error (network, parse, unexpected) |
-| `auth_error` | 2 | Token missing/invalid; run `rimo auth login` |
-| `permission_denied` | 2 | Token lacks the required scope (`scope_required` in `details`) |
-| `not_found` | 3 | Resource does not exist or is inaccessible |
-| `validation_error` | 4 | Bad flag or argument |
-| `unknown_command` | 1 | Typo; check `details.suggestion` for the closest match |
+| Field | Description |
+|-------|-------------|
+| `code` | Machine-readable error code. Currently always `error`. |
+| `message` | Human-readable description of the failure (validation message, API status, etc.). |

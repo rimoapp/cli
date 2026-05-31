@@ -211,7 +211,7 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 - URL のみで共有された（所有や参加によらない）メモはどの一覧にも**表示されません**が、
   ID があれば `rimo note get <id>` で直接取得できます。
 - アクセスできないメモに対する `rimo note get` は、メモの存在を明かさずに
-  `not_found`（終了コード 3）を返します。
+  not-found エラーを返します。
 
 ### `rimo note list`
 
@@ -311,9 +311,7 @@ rimo note get note_abc123 --fields id,title        # JSON メタデータをフ�
 
 **エラー**
 
-- `not_found`（終了コード 3） — メモ ID が存在しない、またはアクセス権がない。
-- `permission_denied`（終了コード 2） — トークンに `notes:read` スコープがない。
-- `validation_error`（終了コード 4） — 互換性のないフラグの組み合わせ。
+エラーの JSON 形式と終了コードについては [出力とエラー](output-and-errors.md) を参照してください。
 
 ---
 
@@ -369,9 +367,7 @@ rimo note search "release" --mode=filter | jq '.notes[].id'
 
 **エラー**
 
-- `validation_error`（終了コード 4） — 空のクエリ、無効な `--mode`/`--content-type`、
-  または `--mode=semantic` でのフィルター専用フラグ。
-- `permission_denied`（終了コード 2） — トークンに `notes:read` スコープがない。
+エラーの JSON 形式と終了コードについては [出力とエラー](output-and-errors.md) を参照してください。
 
 ---
 
@@ -421,8 +417,7 @@ rimo note ask "今週の議事録を要約して"
 
 **エラー**
 
-- `validation_error`（終了コード 4） — 空の質問。
-- `permission_denied`（終了コード 2） — トークンに `notes:read` スコープがない。
+エラーの JSON 形式と終了コードについては [出力とエラー](output-and-errors.md) を参照してください。
 
 ---
 
@@ -488,11 +483,7 @@ sudo rimo upgrade --use-sudo           # root 所有のインストールディ�
 
 **エラー**
 
-- `permission_denied`（終了コード 2） — インストールパスが書き込み不可で、`--use-sudo`
-  が渡されなかった。`details.suggested_command` は `sudo rimo upgrade --use-sudo`。
-- 一般的な `error`（終了コード 1） — 開発ビルドの拒否、バージョンチェックの失敗（ネットワーク
-  またはレート制限）、ダウンロード失敗（OS/アーキテクチャ向けアセットが見つからない、
-  ネットワーク）、チェックサムの不一致、または展開失敗。
+エラーの JSON 形式と終了コードについては [出力とエラー](output-and-errors.md) を参照してください。
 
 **起動時の更新通知**
 
