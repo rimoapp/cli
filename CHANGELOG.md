@@ -3,14 +3,14 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
-## v1.0.0 — 2026-05-28
+## v1.0.0 — 2026-06-01
 
 Initial public release.
 
 ### Added
 
-- `rimo auth login` / `logout` / `status` / `switch` — OAuth Device
-  Authorization Grant login with credentials stored in your OS keyring.
+- `rimo auth login` / `logout` / `switch` / `status` — browser-based login
+  with credentials stored in your OS keyring.
 - `rimo note list` — list your notes (`--attended` for notes you participated in).
 - `rimo note get` — fetch a note by ID (metadata, transcript, or document).
 - `rimo note search` — find notes by semantic similarity or keyword.

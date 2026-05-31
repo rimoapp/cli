@@ -93,19 +93,19 @@ The client reads JSON-RPC from stdout and writes to stdin; log output goes to st
 
 Once `rimo mcp` is wired in, your agent picks the right tool from natural-language input. These prompts have all been verified to route to the listed tool:
 
-| What you say                                                         | Tool the agent picks       |
-|----------------------------------------------------------------------|-----------------------------|
-| "Show me my Rimo notes from this week."                              | `note_list`                 |
-| "Which Rimo meetings did I attend last sprint?"                      | `note_list_attended`        |
-| "Get the transcript of note `<id>`."                                 | `note_get`                  |
-| "Who was in the meeting `<id>`?"                                     | `note_list_participants`    |
-| "What documents are attached to note `<id>`?"                        | `note_list_documents`       |
-| "Pull document `<doc>` from note `<id>`."                            | `note_get_document`         |
-| "Find Rimo notes mentioning 'pricing strategy'."                     | `note_search`               |
-| "Notes about onboarding — even ones not using that exact phrase."    | `note_semantic_search`      |
-| "What did we decide about the Q3 release?"                           | `note_ask`                  |
-| "Which Rimo accounts am I logged into?"                              | `rimo_auth_status`          |
-| "List every Rimo tool you can use."                                  | `rimo_commands`             |
+| What you say                                                              | Tool the agent picks       |
+|---------------------------------------------------------------------------|-----------------------------|
+| "Show me my Rimo notes from this week."                                   | `note_list`                 |
+| "Which Rimo meetings did I attend last sprint?"                           | `note_list_attended`        |
+| "Get the transcript of Rimo note `<id>`."                                 | `note_get`                  |
+| "Who was in the Rimo meeting `<id>`?"                                     | `note_list_participants`    |
+| "What documents are attached to Rimo note `<id>`?"                        | `note_list_documents`       |
+| "Pull document `<doc>` from Rimo note `<id>`."                            | `note_get_document`         |
+| "Find Rimo notes mentioning 'pricing strategy'."                          | `note_search`               |
+| "Find Rimo notes about onboarding — even ones not using that exact phrase." | `note_semantic_search`    |
+| "Looking at my Rimo notes, what did we decide about the Q3 release?"      | `note_ask`                  |
+| "Which Rimo accounts am I logged into?"                                   | `rimo_auth_status`          |
+| "List every Rimo tool you can use."                                       | `rimo_commands`             |
 
 ---
 

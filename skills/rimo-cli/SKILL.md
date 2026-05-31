@@ -117,7 +117,7 @@ When to instead ask the user to run it themselves:
 ### Token resolution order (first hit wins)
 
 1. `--account <alias>` flag → keyring
-2. `default_account` in `~/.config/rimo/config.yaml` → keyring
+2. `active_account` in `~/.config/rimo/config.yaml` → keyring
 3. Otherwise the command exits 1 with a JSON error to stdout — run `rimo auth login` (or ask the user to)
 
 ### If already authenticated

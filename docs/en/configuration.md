@@ -7,7 +7,7 @@
 Account metadata is stored at `~/.config/rimo/config.yaml`:
 
 ```yaml
-default_account: alice-rimo-personal
+active_account: alice-rimo-personal
 accounts:
   alice-rimo-personal:
     user_id: user_123

@@ -346,7 +346,7 @@ printed to **stderr** so stdout stays pipe-clean for `| jq`.
 ```json
 {
   "notes": [
-    { "id": "wn9K...", "title": "Release plan: Q3 launch", "owner_name": "Aditya Ghai", "held_at": "2026-04-28T09:21:00Z" }
+    { "id": "wn9K...", "title": "Release plan: Q3 launch", "owner_name": "Alice Smith", "held_at": "2026-04-28T09:21:00Z" }
   ],
   "total_count": 12
 }

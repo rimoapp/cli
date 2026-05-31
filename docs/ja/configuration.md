@@ -7,7 +7,7 @@
 アカウントメタデータは `~/.config/rimo/config.yaml` に保存されます:
 
 ```yaml
-default_account: alice-rimo-personal
+active_account: alice-rimo-personal
 accounts:
   alice-rimo-personal:
     user_id: user_123

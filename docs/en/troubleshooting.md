@@ -35,13 +35,22 @@ quarantined, so you usually only hit this with a manual browser download.)
 
 ## `rimo auth login` does not open a browser
 
-`rimo auth login` prints a URL and a code. If no browser opens automatically,
-open the printed URL manually and enter the code.
+If the browser doesn't open automatically, run with `--no-browser`:
 
-## Login code expires or fails
+```bash
+rimo auth login --no-browser
+```
 
-The login code is short-lived. Re-run `rimo auth login` to get a fresh code,
-and complete the browser step promptly.
+`rimo` prints a URL you can open on any other device (phone, another laptop).
+After signing in there, paste the short code shown on the page back into your
+terminal.
+
+## `--no-browser` code is rejected or expires
+
+The short code shown on the consent page is short-lived. Re-run
+`rimo auth login --no-browser` to get a fresh URL and complete the browser
+step promptly. Codes are case-sensitive and use the form `XXXX-XXXX` —
+paste them exactly as shown.
 
 ## Behind a proxy or firewall
 
