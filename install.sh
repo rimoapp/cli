@@ -29,15 +29,20 @@ get() {
   esac
   if have curl; then
     if [ -n "$_auth" ]; then
-      curl -fsSL -H "Authorization: Bearer $TOKEN" -o "$_out" "$_url"
+      curl -fsSL --connect-timeout 10 --max-time 300 --max-filesize 209715200 \
+        --retry 3 --retry-delay 2 \
+        -H "Authorization: Bearer $TOKEN" -o "$_out" "$_url"
     else
-      curl -fsSL -o "$_out" "$_url"
+      curl -fsSL --connect-timeout 10 --max-time 300 --max-filesize 209715200 \
+        --retry 3 --retry-delay 2 \
+        -o "$_out" "$_url"
     fi
   elif have wget; then
     if [ -n "$_auth" ]; then
-      wget -q --header="Authorization: Bearer $TOKEN" -O "$_out" "$_url"
+      wget -q --timeout=30 --tries=3 \
+        --header="Authorization: Bearer $TOKEN" -O "$_out" "$_url"
     else
-      wget -q -O "$_out" "$_url"
+      wget -q --timeout=30 --tries=3 -O "$_out" "$_url"
     fi
   else
     err "need curl or wget installed"
@@ -49,9 +54,12 @@ get() {
 # reaches the call) and therefore executes nothing.
 main() {
   REPO="rimoapp/cli"
-  INSTALL_DIR="${RIMO_INSTALL_DIR:-$HOME/.local/bin}"
   BINARY="rimo"
   TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+
+  [ -n "${HOME:-}" ] || [ -n "${RIMO_INSTALL_DIR:-}" ] \
+    || err "\$HOME is not set; please set RIMO_INSTALL_DIR explicitly"
+  INSTALL_DIR="${RIMO_INSTALL_DIR:-${HOME}/.local/bin}"
 
   # ---- detect platform -----------------------------------------------------
   os="$(uname -s)"
@@ -83,7 +91,7 @@ main() {
 
   # ---- download into a temp dir --------------------------------------------
   tmp="$(mktemp -d 2>/dev/null || mktemp -d -t rimo)"
-  trap 'rm -rf "$tmp"' EXIT INT TERM
+  trap 'rm -rf "$tmp"' EXIT HUP INT TERM
 
   info "Downloading $archive ($version)..."
   get "$base_url/$archive"      "$tmp/$archive"      || err "download failed: $base_url/$archive"
@@ -106,10 +114,17 @@ main() {
   [ -f "$tmp/$BINARY" ]              || err "binary '$BINARY' not found in archive"
 
   mkdir -p "$INSTALL_DIR" || err "could not create $INSTALL_DIR"
-  if ! install -m 0755 "$tmp/$BINARY" "$INSTALL_DIR/$BINARY" 2>/dev/null; then
-    cp "$tmp/$BINARY" "$INSTALL_DIR/$BINARY" || err "could not install to $INSTALL_DIR"
-    chmod 0755 "$INSTALL_DIR/$BINARY"        || err "could not set permissions on $INSTALL_DIR/$BINARY"
+
+  # Stage + atomic rename so a re-install never produces a half-written
+  # binary or hits "text file busy" against a running `rimo`.
+  staged="$INSTALL_DIR/.$BINARY.$$.tmp"
+  if ! cp "$tmp/$BINARY" "$staged" 2>/dev/null; then
+    rm -f "$staged"
+    err "could not write to $INSTALL_DIR (permission denied?)"
   fi
+  chmod 0755 "$staged" || { rm -f "$staged"; err "could not set permissions on $staged"; }
+  mv -f "$staged" "$INSTALL_DIR/$BINARY" \
+    || { rm -f "$staged"; err "could not install to $INSTALL_DIR/$BINARY"; }
 
   info ""
   info "rimo $version installed to $INSTALL_DIR/$BINARY"
