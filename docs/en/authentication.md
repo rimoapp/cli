@@ -53,7 +53,7 @@ resolution rules.
 When a command needs a token, `rimo` resolves it in this order:
 
 1. `--account <alias>` flag → config lookup → stored credentials.
-2. `default_account` from config → stored credentials.
+2. `active_account` from config → stored credentials.
 3. If none resolve, the command exits with an authentication error and the
    message *"Run `rimo auth login`"*.
 

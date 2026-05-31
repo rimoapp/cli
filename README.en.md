@@ -51,7 +51,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 ## Global flags
 
 ```
---account <alias>    Account alias to use (overrides default_account in config)
+--account <alias>    Account alias to use (overrides active_account in config)
 --fields <spec>      Fields to include: "" (all), "compact", or "field1,field2"
 --excludes <list>    Comma-separated fields to exclude from output
 --dry-run            Simulate the command without side effects (writes only)
