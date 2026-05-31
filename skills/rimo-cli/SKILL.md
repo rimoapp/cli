@@ -277,7 +277,6 @@ The following commands are planned but not yet available — support is under ac
 | `--excludes` | Drop noisy fields (e.g. `transcript,document_markdown`) — applied after `--fields` |
 | `--dry-run`  | Simulate a write — currently no write commands are implemented, so this is mainly future-proofing |
 | `--account`  | Override default account                                                  |
-| `--token`    | Inline token (overrides saved credentials) |
 
 ```bash
 rimo note list --fields compact

@@ -52,7 +52,6 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 ```
 --account <alias>    使用するアカウントのエイリアス（設定の default_account を上書き）
---token <string>     API トークン（保存された認証情報を上書き）
 --fields <spec>      含めるフィールド: "" (すべて)、"compact"、または "field1,field2"
 --excludes <list>    出力から除外するフィールド（カンマ区切り）
 --dry-run            副作用なしでコマンドをシミュレート（書き込み系のみ）

@@ -16,7 +16,6 @@ human-facing commands print plain text on success (errors are always JSON):
 | Flag | Description |
 |------|-------------|
 | `--account` | Account alias to use (overrides `default_account` in config) |
-| `--token` | API token (overrides saved credentials) |
 | `--fields` | Fields to include: `""` (all), `"compact"`, or `"f1,f2"` |
 | `--excludes` | Comma-separated fields to exclude from output |
 | `--dry-run` | Simulate the command without side effects (writes only) |
