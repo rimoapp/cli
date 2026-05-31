@@ -4,14 +4,11 @@
 # Usage:
 #   curl -fsSL https://rimo.app/cli/install.sh | sh
 #
-# It detects your OS/arch, downloads the latest release archive from GitHub,
-# verifies its checksum, and installs the `rimo` binary (no sudo required).
-#
 # Environment variables (optional):
 #   RIMO_INSTALL_DIR   Install directory. Default: $HOME/.local/bin.
 #   GITHUB_TOKEN / GH_TOKEN
-#                      GitHub token, sent only to the GitHub API to avoid
-#                      anonymous rate limits.
+#                      GitHub token, sent only to the GitHub API to dodge
+#                      the anonymous rate limit.
 
 set -eu
 
@@ -19,10 +16,10 @@ err()  { printf 'rimo install: %s\n' "$1" >&2; exit 1; }
 info() { printf '%s\n' "$1" >&2; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
-# get <url> <output|->  — download to a file, or stream to stdout when "-"
+# get <url> <output|->  — download to a file, or stream to stdout when "-".
+# Forwards a GitHub token only to api.github.com (never to asset hosts).
 get() {
   _url="$1"; _out="$2"
-  # Only forward the token to the GitHub API (never to asset/redirect hosts).
   _auth=""
   case "$_url" in
     https://api.github.com/*) [ -n "${TOKEN:-}" ] && _auth=1 ;;
@@ -49,9 +46,8 @@ get() {
   fi
 }
 
-# All side-effecting logic lives in main(), which is only invoked on the very
-# last line. A truncated `curl | sh` download fails to parse main() (or never
-# reaches the call) and therefore executes nothing.
+# All side-effecting logic lives in main(); a truncated `curl | sh` download
+# never reaches the final call below, so nothing executes.
 main() {
   REPO="rimoapp/cli"
   BINARY="rimo"
@@ -61,7 +57,6 @@ main() {
     || err "\$HOME is not set; please set RIMO_INSTALL_DIR explicitly"
   INSTALL_DIR="${RIMO_INSTALL_DIR:-${HOME}/.local/bin}"
 
-  # ---- detect platform -----------------------------------------------------
   os="$(uname -s)"
   case "$os" in
     Linux)  os="linux" ;;
@@ -76,7 +71,6 @@ main() {
     *) err "unsupported architecture '$arch'" ;;
   esac
 
-  # ---- resolve the latest release ------------------------------------------
   info "Resolving latest release of $REPO..."
   version="$(get "https://api.github.com/repos/$REPO/releases/latest" - \
     | grep '"tag_name"' | head -n1 \
@@ -89,7 +83,6 @@ main() {
   archive="${BINARY}_${ver_no_v}_${os}_${arch}.tar.gz"
   base_url="https://github.com/$REPO/releases/download/$version"
 
-  # ---- download into a temp dir --------------------------------------------
   tmp="$(mktemp -d 2>/dev/null || mktemp -d -t rimo)"
   trap 'rm -rf "$tmp"' EXIT HUP INT TERM
 
@@ -97,7 +90,6 @@ main() {
   get "$base_url/$archive"      "$tmp/$archive"      || err "download failed: $base_url/$archive"
   get "$base_url/checksums.txt" "$tmp/checksums.txt" || err "could not download checksums.txt"
 
-  # ---- verify checksum -----------------------------------------------------
   info "Verifying checksum..."
   if   have sha256sum; then sum_cmd="sha256sum"
   elif have shasum;    then sum_cmd="shasum -a 256"
@@ -109,7 +101,6 @@ main() {
   actual="$(cd "$tmp" && $sum_cmd "$archive" | awk '{print $1}')"
   [ "$expected" = "$actual" ] || err "checksum mismatch for $archive"
 
-  # ---- extract + install ---------------------------------------------------
   tar -xzf "$tmp/$archive" -C "$tmp" || err "failed to extract $archive"
   [ -f "$tmp/$BINARY" ]              || err "binary '$BINARY' not found in archive"
 
@@ -129,7 +120,6 @@ main() {
   info ""
   info "rimo $version installed to $INSTALL_DIR/$BINARY"
 
-  # ---- PATH hint -----------------------------------------------------------
   case ":$PATH:" in
     *":$INSTALL_DIR:"*) ;;
     *)
