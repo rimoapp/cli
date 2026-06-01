@@ -46,7 +46,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 | [`rimo version`](docs/ja/commands.md#rimo-version)         | CLI のバージョンを表示 |
 | [`rimo upgrade`](docs/ja/commands.md#rimo-upgrade)         | 最新リリースへ自己アップグレード |
 
-フラグごとの完全なリファレンス: [コマンド](docs/ja/commands.md)。
+完全なリファレンスはこちらを参照ください: [コマンド](docs/ja/commands.md)。
 
 ## グローバルフラグ
 
@@ -54,7 +54,7 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 --account <alias>    使用するアカウントのエイリアス（設定の active_account を上書き）
 --fields <spec>      含めるフィールド: "" (すべて)、"compact"、または "field1,field2"
 --excludes <list>    出力から除外するフィールド（カンマ区切り）
---dry-run            副作用なしでコマンドをシミュレート（書き込み系のみ）
+--dry-run            副作用なしでコマンドをシミュレーション（書き込み系のみ）
 ```
 
 ## ドキュメント
@@ -88,11 +88,11 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 - *「今週の Rimo のメモを要約して」*
 - *「Q3 リリースプランに関する Rimo のメモを探して」*
 
-Claude Code、Codex、Cursor など他の MCP クライアントの完全なセットアップ: [MCP サーバー](docs/ja/mcp.md)。
+Claude Code、Codex、Cursor など他の MCP クライアントの完全なセットアップについてはこちらを参照ください: [MCP サーバー](docs/ja/mcp.md)。
 
 ### エージェント用スキル（シェルコマンドを実行できる任意のエージェント向け）
 
-`rimo` には [エージェント用スキル](skills/rimo-cli/SKILL.md) も同梱されています — 自己完結型の操作マニュアルで、任意のエージェントが読み込んでシェルコマンドを実行することで利用できます。MCP に対応していないエージェント向け、またはシステムプロンプトに貼り付ける単一の成果物が欲しい場合にどうぞ。
+`rimo` には [エージェント用スキル](skills/rimo-cli/SKILL.md) も同梱されています — 自己完結型の操作マニュアルで、任意のエージェントが読み込んでシェルコマンドを実行することで利用できます。MCP に対応していないエージェント向け、またはシステムプロンプトに貼り付ける単一の成果物が欲しい場合にご利用ください。
 
 ```bash
 # プロジェクト単位（リポジトリと一緒にコミット）
@@ -110,7 +110,7 @@ Codex やその他のエージェントでは、セッション開始時にイ�
 
 ## サポート
 
-バグの発見や機能のリクエストがありますか？このリポジトリで issue を作成してください。
+バグの発見や機能のリクエストがある場合は、このリポジトリで issue を作成してください。
 
 ## セキュリティ
 

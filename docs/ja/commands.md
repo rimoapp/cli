@@ -18,7 +18,7 @@
 | `--account` | 使用するアカウントのエイリアス（設定の `active_account` を上書き） |
 | `--fields` | 含めるフィールド: `""` (すべて)、`"compact"`、または `"f1,f2"` |
 | `--excludes` | 出力から除外するフィールド（カンマ区切り） |
-| `--dry-run` | 副作用なしでコマンドをシミュレート（書き込み系のみ） |
+| `--dry-run` | 副作用なしでコマンドをシミュレーション（書き込み系のみ） |
 
 ---
 
@@ -88,7 +88,7 @@ rimo auth login
 
 ### `rimo auth logout`
 
-トークンを失効させ（ベストエフォート）、設定と認証情報ストアからアカウントを削除します。
+トークンを失効させ、設定と認証情報ストアからアカウントを削除します。
 
 **構文**
 
@@ -168,15 +168,15 @@ rimo auth switch <alias|email|org-name> [--org <org-name>]
 
 **解決の順序**
 
-1. エイリアスの完全一致。
-2. メールの一致 — メールが複数の組織に対応し、`--org` が指定されていない場合はエラーになります。
-3. 現在のメールのアカウント内での組織名の一致、次に全体での一致。
+1. `alias` の完全一致。
+2. `email` の一致 — `email` が複数の組織に対応し、`--org` が指定されていない場合はエラーになります。
+3. `org-name` の一致。 - 現在有効なメールアドレスが所属する組織が優先されます。
 
 **フラグ**
 
 | フラグ | 説明 |
 |------|-------------|
-| `--org` | メールが複数の組織に登録されている場合に曖昧さを解消するための組織名。 |
+| `--org` | メールアドレスが複数の組織に登録されている場合に曖昧さを解消するための組織名。 |
 
 **例**
 
@@ -201,20 +201,20 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 
 ---
 
-## メモ
+## note
 
-**可視性と権限。** メモコマンドが返す内容はアクセス権によって異なります:
+ノートコマンドが返す内容はアクセス権によって異なります:
 
-- `rimo note list`（デフォルト）は**自分が所有する**メモのみを返します。
-- `rimo note list --attended` は**自分が参加した**メモを返します。
-- URL のみで共有された（所有や参加によらない）メモはどの一覧にも**表示されません**が、
+- `rimo note list`（デフォルト）は**自分が所有する**ノートのみを返します。
+- `rimo note list --attended` は**自分が参加した**ノートを返します。
+- URL のみで共有された（所有や参加によらない）ノートはどの一覧にも**表示されません**が、
   ID があれば `rimo note get <id>` で直接取得できます。
-- アクセスできないメモに対する `rimo note get` は、メモの存在を明かさずに
+- アクセスできないノートに対する `rimo note get` は、ノートの存在を明かさずに
   not-found エラーを返します。
 
 ### `rimo note list`
 
-メモを一覧表示します。
+ノートを一覧表示します。
 
 **構文**
 
@@ -222,17 +222,17 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 rimo note list [--attended] [--page-size <int>] [--page-token <string>]
 ```
 
-**デフォルトモード。** 認証済みユーザーが作成したメモを一覧表示します。
+**デフォルトモード。** 認証済みユーザーが作成したノートを一覧表示します。
 
-**`--attended` モード。** 認証済みユーザーが参加したメモを一覧表示します。
+**`--attended` モード。** 認証済みユーザーが参加したノートを一覧表示します。
 
-どちらのモードも `--page-size` と `--page-token` でカーソルページネーションできます。
+どちらのモードも `--page-size` と `--page-token` でページネーションできます。
 
 **フラグ**
 
 | フラグ | 型 | デフォルト | 説明 |
 |------|------|---------|-------------|
-| `--attended` | bool | `false` | 参加したメモを一覧表示 |
+| `--attended` | bool | `false` | 参加したノートを一覧表示 |
 | `--page-size` | int | `0` | ページサイズ（`0` の場合はサーバー側のデフォルトに従う） |
 | `--page-token` | string | `""` | 前回の呼び出しの `next_page_token` |
 
@@ -266,8 +266,7 @@ rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
 
 ### `rimo note get`
 
-単一のメモを取得します。デフォルトの出力はメタデータ JSON で、フラグによって
-コンテンツ描画モードに切り替わります。
+単一のノートを取得します。デフォルトのではメタデータのみが JSON 形式で出力され、追加のフラグを指定することによって文字起こしや議事録コンテンツを取得することができます。
 
 **構文**
 
@@ -280,21 +279,18 @@ rimo note get <note_id> [flags]
 | フラグ | 説明 |
 |------|-------------|
 | `--transcript` | 文字起こしを `Speaker: content` 形式のプレーンテキストで出力。 |
-| `--document` | 主ドキュメントを Markdown のプレーンテキストで出力。 |
-| `--full` | 文字起こしに続けて主ドキュメントを出力。 |
-| `--list-documents` | メモに添付されたドキュメントを一覧表示（JSON）。 |
+| `--document` | メインのドキュメントを Markdown のプレーンテキストで出力。 |
+| `--full` | 文字起こしに続けてメインのドキュメントを出力。 |
+| `--list-documents` | ノートに添付されたドキュメントを一覧表示（JSON）。 |
 | `--document-id <id>` | ID で指定したドキュメントの Markdown を出力。 |
 
-**相互排他**
+**注意点**
 
 - `--list-documents` / `--document-id` は `--transcript` / `--document` / `--full` と
   併用できません。
-- `--list-documents` と `--document-id` は相互排他です。
 
-コンテンツフラグ（`--transcript`、`--document`、`--full`、`--document-id`）は stdout に
-プレーンテキストを出力します。文字起こしやドキュメントのテキストは解析対象ではなく、
-読んだりパイプしたりするためのものだからです。エラーは依然として JSON なので、
-メモが見つからないエラーは機械可読のままです。
+- 各フラグ（`--transcript`、`--document`、`--full`、`--document-id`）は stdout に 
+JSON ではなく、プレーンテキストを出力します。
 
 **例**
 
@@ -316,7 +312,7 @@ rimo note get note_abc123 --fields id,title        # JSON メタデータをフ�
 
 ### `rimo note search`
 
-意味的類似度（デフォルト）またはキーワードフィルターでメモを検索します。
+意味的類似度（デフォルト）またはキーワードフィルターでノートを検索します。
 `rimo note list` と同じ `{notes, total_count}` 形式の JSON を返します。一覧ではなく
 統合された回答が欲しい場合は [`rimo note ask`](#rimo-note-ask) を使ってください。
 
@@ -330,8 +326,8 @@ rimo note search <query> [--mode=semantic|filter] [flags]
 
 | フラグ | 説明 |
 |------|-------------|
-| `--mode` | `semantic`（デフォルト）は意味でメモをランク付けし、`filter` はページネーション付きのキーワード検索を行う。 |
-| `--limit` | `--mode=semantic` の最大結果数（既定はサーバー側）。 |
+| `--mode` | `semantic`（デフォルト）は意味でノートをランク付けし、`filter` はページネーション付きのキーワード検索を行う。 |
+| `--limit` | `--mode=semantic` の最大結果数。 |
 | `--page` | `--mode=filter` のページ番号（1 始まり、デフォルト 1）。 |
 | `--per` | `--mode=filter` のページサイズ（デフォルト 10）。 |
 | `--content-type` | `--mode=filter` を次のいずれかに限定: `all` `transcripts` `headings` `annotations` `title` `document`。 |
@@ -351,9 +347,9 @@ stdout に JSON `{notes: [...], total_count: <int>}` を出力します。`Fetch
 }
 ```
 
-フィルターモードは各ヒットに `snippet`、`channel_id`、`owner_name`、`held_at`、
-`created_at` を設定します。セマンティックモードは結果ごとのメタデータが少ないため
-`id` と `title` のみを設定します。
+フィルターモードは各結果に `snippet`、`channel_id`、`owner_name`、`held_at`、
+`created_at` を含みます。セマンティックモードは結果ごとのメタデータが少ないため
+`id` と `title` のみを含みます。
 
 **例**
 
@@ -372,7 +368,7 @@ rimo note search "release" --mode=filter | jq '.notes[].id'
 
 ### `rimo note ask`
 
-自然言語で質問すると、メモから AI が統合した回答を返します。AI による回答を生成する
+自然言語で質問すると、ノートから AI が統合した回答を返します。AI による回答を生成する
 唯一のコマンドです。
 
 **構文**
@@ -404,8 +400,8 @@ Fetch a note:
 
 **使い分け**
 
-- `rimo note search` — 返されたメモを自分で開いて読みたいとき。
-- `rimo note ask` — 1 つの答えを引き出すために開きたいとき。
+- `rimo note search` — 返されたノートを自分で開いて読みたいとき。
+- `rimo note ask` — 回答に対する答えを引き出すために開きたいとき。
 
 **例**
 
@@ -442,7 +438,7 @@ rimo version 1.0.0
 
 ### `rimo upgrade`
 
-インストール済みバイナリを最新リリースへ自己アップグレードします。
+インストール済みバイナリを最新リリースへアップグレードします。
 
 `rimo upgrade` は常に**最新**リリースをインストールします — 古いバージョンへの固定（ピン留め）やダウングレードを行うフラグはありません。リリースアーカイブは HTTPS でダウンロードされ、実行中のバイナリを置き換える前にリリースの `checksums.txt` でチェックサムが検証されます。ログインは不要です。
 
