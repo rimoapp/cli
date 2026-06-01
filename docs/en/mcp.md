@@ -35,7 +35,7 @@ Add a `rimo` entry to your `.mcp.json`. Project-local (`./.mcp.json`, committed 
 }
 ```
 
-Restart Claude Code so it spawns the new server. Rimo tools appear in the tool picker; ask naturally and Claude Code routes to the right tool.
+Restart Claude Code so it spawns the new server. Rimo tools are added; ask naturally and Claude Code routes to the right tool.
 
 ### Codex
 
@@ -65,7 +65,7 @@ The client reads JSON-RPC from stdout and writes to stdin; log output goes to st
 
 ## 3. Available tools
 
-`rimo mcp` advertises 11 tools: 9 derived from the Rimo API plus two introspection helpers. Call `rimo_commands` at any time for the live machine-readable catalogue, including each tool's JSON Schema.
+`rimo mcp` advertises 11 tools. Call `rimo_commands` at any time for the live machine-readable catalogue, including each tool's JSON Schema.
 
 | Tool name                | What it does                                                                |
 |--------------------------|-----------------------------------------------------------------------------|
