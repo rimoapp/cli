@@ -88,7 +88,7 @@ refreshes the metadata.
 
 ### `rimo auth logout`
 
-Revoke the token (best-effort) and remove the account from config + credential store.
+Revoke the token and remove the account from config + credential store.
 
 **Syntax**
 
@@ -168,9 +168,9 @@ Also available as `rimo auth use`.
 
 **Resolution order**
 
-1. Exact alias match.
-2. Email match — errors if the email maps to multiple orgs and `--org` is not given.
-3. Org-name match within the current email's accounts, then globally.
+1. Exact `alias` match.
+2. `email` match — errors if the `email` maps to multiple orgs and `--org` is not given.
+3. `org-name` match — orgs belonging to the currently active email are preferred.
 
 **Flags**
 
@@ -203,7 +203,7 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # email + org disambi
 
 ## Notes
 
-**Visibility & permissions.** What the note commands return depends on your access:
+What the note commands return depends on your access:
 
 - `rimo note list` (default) returns only notes **you own**.
 - `rimo note list --attended` returns notes **you participated in**.
@@ -227,7 +227,7 @@ rimo note list [--attended] [--page-size <int>] [--page-token <string>]
 
 **`--attended` mode.** Lists notes the authenticated user participated in.
 
-Both modes are cursor-paginated via `--page-size` and `--page-token`.
+Both modes are paginated via `--page-size` and `--page-token`.
 
 **Flags**
 
@@ -267,8 +267,8 @@ rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
 
 ### `rimo note get`
 
-Get a single note. Default output is metadata JSON; flags switch into
-content-rendering modes.
+Get a single note. By default, only metadata is output as JSON. Additional flags
+let you retrieve the transcript or document content.
 
 **Syntax**
 
@@ -286,16 +286,13 @@ rimo note get <note_id> [flags]
 | `--list-documents` | List documents attached to the note (JSON). |
 | `--document-id <id>` | Print a specific document's markdown by ID. |
 
-**Mutual exclusivity**
+**Notes**
 
 - `--list-documents` / `--document-id` cannot be combined with `--transcript` /
   `--document` / `--full`.
 - `--list-documents` and `--document-id` are mutually exclusive.
-
-The content flags (`--transcript`, `--document`, `--full`, `--document-id`) print
-plain text to stdout because transcript and document text is meant to be read or
-piped, not parsed. Errors are still JSON, so a missing-note error stays
-machine-readable.
+- The content flags (`--transcript`, `--document`, `--full`, `--document-id`)
+  print plain text to stdout, not JSON.
 
 **Examples**
 
@@ -333,7 +330,7 @@ rimo note search <query> [--mode=semantic|filter] [flags]
 | Flag | Description |
 |------|-------------|
 | `--mode` | `semantic` (default) ranks notes by meaning; `filter` does keyword search with pagination. |
-| `--limit` | Max results for `--mode=semantic` (defaults to server-side). |
+| `--limit` | Max results for `--mode=semantic`. |
 | `--page` | Page number for `--mode=filter` (1-based, default 1). |
 | `--per` | Page size for `--mode=filter` (default 10). |
 | `--content-type` | Limit `--mode=filter` to one of: `all` `transcripts` `headings` `annotations` `title` `document`. |
@@ -352,8 +349,8 @@ printed to **stderr** so stdout stays pipe-clean for `| jq`.
 }
 ```
 
-Filter mode populates `snippet`, `channel_id`, `owner_name`, `held_at`,
-`created_at` on each hit; semantic mode only populates `id` and `title` because
+Filter mode includes `snippet`, `channel_id`, `owner_name`, `held_at`,
+`created_at` on each result; semantic mode only includes `id` and `title` because
 semantic search returns less metadata per result.
 
 **Examples**
@@ -443,7 +440,7 @@ rimo version 1.0.0
 
 ### `rimo upgrade`
 
-Self-upgrade the installed binary to the latest release.
+Upgrade the installed binary to the latest release.
 
 `rimo upgrade` always installs the **latest** release — there is no flag to pin or downgrade to an older version. The release archive is downloaded over HTTPS and its checksum is verified against the release's `checksums.txt` before the running binary is replaced; no login is required.
 

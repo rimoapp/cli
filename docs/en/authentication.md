@@ -3,8 +3,7 @@
 [English](../en/authentication.md) | [日本語](../ja/authentication.md)
 
 `rimo` authenticates with Rimo Voice through a browser-based login. Tokens are
-stored securely by your operating system's credential store, never in a
-plain-text file.
+stored securely by your OS credential store, never in a text file.
 
 ## Logging in
 
@@ -48,9 +47,9 @@ rimo auth logout                  # remove the active account (or pass --account
 See the [commands reference](commands.md#authentication) for full flags and
 resolution rules.
 
-## Token resolution priority
+## Account selection priority
 
-When a command needs a token, `rimo` resolves it in this order:
+When a command needs an account, `rimo` resolves it in this order:
 
 1. `--account <alias>` flag → config lookup → stored credentials.
 2. `active_account` from config → stored credentials.
