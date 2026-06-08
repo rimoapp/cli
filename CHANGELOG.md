@@ -3,7 +3,17 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
-## v1.0.0 — 2026-06-01
+## v1.0.1
+
+### Fixed
+
+- `--fields` and `--excludes` now apply consistently across every command,
+  including `rimo note search`. List and object responses keep their metadata
+  (e.g. `total_count`) while the records inside are filtered.
+- `rimo auth status` now refreshes renewable tokens before reporting, so an
+  account whose session is still valid is shown as `valid`.
+
+## v1.0.0
 
 Initial public release.
 
