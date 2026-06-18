@@ -3,6 +3,22 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## v1.1.0
+
+### Added
+
+- `rimo team list` — list the teams you belong to (paged automatically for
+  large accounts).
+- Windows installation support — you can now install rimo on Windows via
+  PowerShell. See the installation guide for the command.
+
+### Fixed
+
+- `rimo upgrade` now retries automatically when a download is interrupted, so a
+  brief network problem no longer makes the upgrade fail.
+- `rimo auth` commands now show a clear error when `--dry-run` is used, since
+  that option does not apply to them.
+
 ## v1.0.1
 
 ### Fixed
