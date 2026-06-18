@@ -65,7 +65,7 @@ rimo mcp
 
 ## 3. 利用可能なツール
 
-`rimo mcp` は 11 個のツールを公開しています: `rimo_commands` を呼び出すと、各ツールの JSON Schema を含む、機械可読のカタログをいつでも取得できます。
+`rimo mcp` は 12 個のツールを公開しています: `rimo_commands` を呼び出すと、各ツールの JSON Schema を含む、機械可読のカタログをいつでも取得できます。
 
 | ツール名                  | 役割                                                                       |
 |--------------------------|----------------------------------------------------------------------------|
@@ -78,6 +78,7 @@ rimo mcp
 | `note_search`            | ノート全体に対するキーワード検索。                                          |
 | `note_semantic_search`   | 概念／意味ベースの検索（ランク付けされたノートを返す。AI による回答なし）。 |
 | `note_ask`               | 自然言語クエリ — AI による合成回答とソースノートを返します。                |
+| `team_list`              | 組織内のチームを一覧表示。`page_size` / `page_token` でページネーション可能。|
 | `rimo_auth_status`       | 設定済みアカウントの一覧（`rimo auth status` と同じ形式）。                |
 | `rimo_commands`          | JSON Schema を含むツールカタログ全体。1 回の呼び出しで発見可能。           |
 
@@ -103,7 +104,8 @@ rimo mcp
 | 「Rimo ノート `<id>` からドキュメント `<doc>` を取得して。」                    | `note_get_document`         |
 | 「Rimo ノートで『料金戦略』に言及しているものを探して。」                       | `note_search`               |
 | 「オンボーディングに関する Rimo ノート — その表現を使っていなくても。」          | `note_semantic_search`      |
-| 「Rimo のメモを見て、Q3 リリースについて何を決めたかを教えて。」                  | `note_ask`                  |
+| 「Rimo のノートを見て、Q3 リリースについて何を決めたかを教えて。」                  | `note_ask`                  |
+| 「Rimo 組織のチームを一覧表示して。」                                         | `team_list`                 |
 | 「現在ログインしている Rimo アカウントは?」                                   | `rimo_auth_status`          |
 | 「使える Rimo ツールを全部教えて。」                                         | `rimo_commands`             |
 

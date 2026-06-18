@@ -65,7 +65,7 @@ The client reads JSON-RPC from stdout and writes to stdin; log output goes to st
 
 ## 3. Available tools
 
-`rimo mcp` advertises 11 tools. Call `rimo_commands` at any time for the live machine-readable catalogue, including each tool's JSON Schema.
+`rimo mcp` advertises 12 tools. Call `rimo_commands` at any time for the live machine-readable catalogue, including each tool's JSON Schema.
 
 | Tool name                | What it does                                                                |
 |--------------------------|-----------------------------------------------------------------------------|
@@ -78,6 +78,7 @@ The client reads JSON-RPC from stdout and writes to stdin; log output goes to st
 | `note_search`            | Keyword search across your notes.                                           |
 | `note_semantic_search`   | Concept / meaning-based retrieval (returns ranked notes; no AI answer).     |
 | `note_ask`               | Natural-language Q&A — returns an AI-synthesised answer plus source notes.  |
+| `team_list`              | List teams in your organization. Supports `page_size` / `page_token`.      |
 | `rimo_auth_status`       | List configured accounts (same shape as `rimo auth status`).                |
 | `rimo_commands`          | Full tool catalogue with JSON Schemas. One-call discovery.                  |
 
@@ -104,6 +105,7 @@ Once `rimo mcp` is wired in, your agent picks the right tool from natural-langua
 | "Find Rimo notes mentioning 'pricing strategy'."                          | `note_search`               |
 | "Find Rimo notes about onboarding — even ones not using that exact phrase." | `note_semantic_search`    |
 | "Looking at my Rimo notes, what did we decide about the Q3 release?"      | `note_ask`                  |
+| "List the teams in my Rimo organization."                                 | `team_list`                 |
 | "Which Rimo accounts am I logged into?"                                   | `rimo_auth_status`          |
 | "List every Rimo tool you can use."                                       | `rimo_commands`             |
 

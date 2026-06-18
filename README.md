@@ -2,7 +2,7 @@
 
 [English](README.en.md) | [日本語](README.md)
 
-`rimo` は [Rimo Voice](https://rimo.app) プラットフォームのコマンドラインインターフェースです。ターミナルから会議メモの検索・取得・質問ができます。
+`rimo` は [Rimo Voice](https://rimo.app) プラットフォームのコマンドラインインターフェースです。ターミナルから会議ノートの検索・取得・質問ができます。
 
 人間と AI エージェント（Claude Code、Codex など）の両方のために作られています。すべてのコマンドはデフォルトで JSON を出力し、`--help` で挙動を確認できるため、スクリプトやエージェントのワークフローにそのまま組み込めます。
 
@@ -20,13 +20,13 @@ curl -fsSL https://rimo.app/cli/install.sh | sh
 
 ```bash
 rimo auth login        # ブラウザベースの安全なログイン（トークンは OS により安全に保存）
-rimo note list         # メモを一覧表示（JSON）
-rimo note get <id>     # 単一のメモを取得
+rimo note list         # ノートを一覧表示（JSON）
+rimo note get <id>     # 単一のノートを取得
 ```
 
 ```bash
-rimo note search "Q3 release plan"               # 意味でメモを検索
-rimo note ask "what did we decide on pricing?"   # メモから AI が回答を生成
+rimo note search "Q3 release plan"               # 意味でノートを検索
+rimo note ask "what did we decide on pricing?"   # ノートから AI が回答を生成
 ```
 
 ## コマンド
@@ -39,10 +39,11 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 | [`rimo auth logout`](docs/ja/commands.md#rimo-auth-logout) | トークンを失効させ、保存されたアカウントを削除 |
 | [`rimo auth status`](docs/ja/commands.md#rimo-auth-status) | 認証済みアカウントを表示 |
 | [`rimo auth switch`](docs/ja/commands.md#rimo-auth-switch) | アクティブなアカウントを切り替え |
-| [`rimo note list`](docs/ja/commands.md#rimo-note-list)     | メモを一覧表示（参加したメモは `--attended`） |
-| [`rimo note get`](docs/ja/commands.md#rimo-note-get)       | ID でメモを取得（メタデータ、文字起こし、ドキュメント） |
-| [`rimo note search`](docs/ja/commands.md#rimo-note-search) | 意味的類似度またはキーワードでメモを検索 |
+| [`rimo note list`](docs/ja/commands.md#rimo-note-list)     | ノートを一覧表示（参加したノートは `--attended`） |
+| [`rimo note get`](docs/ja/commands.md#rimo-note-get)       | ID でノートを取得（メタデータ、文字起こし、ドキュメント） |
+| [`rimo note search`](docs/ja/commands.md#rimo-note-search) | 意味的類似度またはキーワードでノートを検索 |
 | [`rimo note ask`](docs/ja/commands.md#rimo-note-ask)       | 質問すると AI が統合した回答を返す |
+| [`rimo team list`](docs/ja/commands.md#rimo-team-list)     | 組織内のチームを一覧表示 |
 | [`rimo version`](docs/ja/commands.md#rimo-version)         | CLI のバージョンを表示 |
 | [`rimo upgrade`](docs/ja/commands.md#rimo-upgrade)         | 最新リリースへ自己アップグレード |
 
@@ -85,8 +86,8 @@ rimo note ask "what did we decide on pricing?"   # メモから AI が回答を�
 
 クライアントを再起動し、自然言語で問いかけてください:
 
-- *「今週の Rimo のメモを要約して」*
-- *「Q3 リリースプランに関する Rimo のメモを探して」*
+- *「今週の Rimo のノートを要約して」*
+- *「Q3 リリースプランに関する Rimo のノートを探して」*
 
 Claude Code、Codex、Cursor など他の MCP クライアントの完全なセットアップについてはこちらを参照ください: [MCP サーバー](docs/ja/mcp.md)。
 

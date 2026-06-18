@@ -260,12 +260,25 @@ Inline `[xxxxx]` chunk-ref citations the model emits are stripped from the visib
 
 Plain text. `rimo upgrade` downloads the latest release over HTTPS and verifies its checksum before replacing the binary — no GitHub login or extra tooling is required, and there is no flag to pin or downgrade. Do not run `rimo upgrade` autonomously — let the user trigger it.
 
+### `rimo team list`
+
+```bash
+rimo team list                                     # all teams in your org
+rimo team list --page-size 20 --page-token "<cursor>"
+rimo team list --fields id,name                    # smaller payload
+```
+
+- Cursor-paginated via `--page-size` / `--page-token`.
+- Response shape: `{ "teams": [...], "next_page_token": "..." }`. Loop until `next_page_token` is empty when you need all teams.
+- Requires an org account — returns an empty list or 403 for personal workspace tokens.
+
 ### Support under development
 
 The following commands are planned but not yet available — support is under active development. If the user asks for one of these, let them know it is coming soon and avoid calling them:
 
 - `rimo note delete`, `rimo note share`
-- `rimo team *`, `rimo user *`
+- `rimo team create`, `rimo team delete` (and other team write operations)
+- `rimo user *`
 - `rimo transcribe *`
 - `rimo commands` (introspection)
 
@@ -332,7 +345,7 @@ rimo note ask "<question>"
 
 - ❌ Don't run `rimo auth login` in a non-interactive context (CI, headless, no human attached) — it blocks on Enter and a browser flow. In an interactive session it's fine; see §2.
 - ❌ Don't hit the Rimo backend with raw `curl` — use `rimo`. The CLI handles token resolution, refresh, and error normalization.
-- ❌ Don't assume `note delete` / `note share` / `team *` / `user *` / `transcribe *` work — support is still under development.
+- ❌ Don't assume `note delete` / `note share` / `team create` / `team delete` / `user *` / `transcribe *` work — support is still under development. (`rimo team list` is available.)
 - ❌ Don't ignore the exit code. JSON on stdout + nonzero exit = error, not data.
 - ❌ Don't pipe `--transcript` / `--document` / `--full` / `--document-id` / `note ask` / `version` / `upgrade` into `jq` — those are plain text on stdout.
 - ❌ Don't try `--yes` or any confirmation-skip flag — they don't exist. Safety is enforced via token scopes.

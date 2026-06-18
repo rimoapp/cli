@@ -418,6 +418,48 @@ See [Output & errors](output-and-errors.md) for the error JSON shape and exit co
 
 ---
 
+## Teams
+
+### `rimo team list`
+
+List teams in your organization.
+
+**Syntax**
+
+```
+rimo team list [--page-size <int>] [--page-token <string>]
+```
+
+**Flags**
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--page-size` | int | `0` | Page size (`0` lets the server pick the default, currently 20) |
+| `--page-token` | string | `""` | Cursor from a previous call's `next_page_token` |
+
+**Examples**
+
+```bash
+rimo team list
+rimo team list --page-size 5
+rimo team list --page-size 5 --page-token "eyJpZCI6..."
+rimo team list --fields id,name
+```
+
+**Output (stdout, JSON)**
+
+```json
+{
+  "teams": [
+    { "id": "team_abc123", "name": "Engineering" },
+    { "id": "team_def456", "name": "Design" }
+  ],
+  "next_page_token": "..."
+}
+```
+
+---
+
 ## Misc
 
 ### `rimo version`

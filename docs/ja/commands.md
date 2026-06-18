@@ -416,6 +416,48 @@ rimo note ask "今週の議事録を要約して"
 
 ---
 
+## チーム
+
+### `rimo team list`
+
+組織内のチームを一覧表示します。
+
+**構文**
+
+```
+rimo team list [--page-size <int>] [--page-token <string>]
+```
+
+**フラグ**
+
+| フラグ | 型 | デフォルト | 説明 |
+|------|------|---------|-------------|
+| `--page-size` | int | `0` | ページサイズ（`0` の場合はサーバー側のデフォルト（現在 20）に従う） |
+| `--page-token` | string | `""` | 前回の呼び出しの `next_page_token` から取得したカーソル |
+
+**例**
+
+```bash
+rimo team list
+rimo team list --page-size 5
+rimo team list --page-size 5 --page-token "eyJpZCI6..."
+rimo team list --fields id,name
+```
+
+**出力（stdout, JSON）**
+
+```json
+{
+  "teams": [
+    { "id": "team_abc123", "name": "Engineering" },
+    { "id": "team_def456", "name": "Design" }
+  ],
+  "next_page_token": "..."
+}
+```
+
+---
+
 ## その他
 
 ### `rimo version`
