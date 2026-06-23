@@ -70,7 +70,18 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 ## AI agents
 
-`rimo` supports two complementary ways to plug into AI coding agents (Claude Code, Codex, Cursor, and others):
+`rimo` supports two complementary ways to plug into AI coding agents (Claude Code, Codex, Cursor, and others). On Claude Code, the easiest path is the plugin, which installs the skill in one command.
+
+### Claude Code plugin (skill in one command)
+
+The `rimo` plugin ships the [agent skill](skills/rimo-cli/SKILL.md) so Claude Code can drive the CLI. Install it in one command:
+
+```
+/plugin marketplace add rimoapp/cli
+/plugin install rimo@rimo
+```
+
+This repo doubles as the marketplace, so there is no external dependency. You still need the `rimo` binary on your `$PATH` and an authenticated session (`rimo auth login`). The skill alone lets the agent use every feature through the `rimo` CLI; add the MCP server below if you also want typed tools.
 
 ### MCP server (typed tools, for MCP-capable clients)
 

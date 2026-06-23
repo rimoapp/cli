@@ -70,7 +70,18 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 
 ## AI エージェント
 
-`rimo` は AI コーディングエージェント（Claude Code、Codex、Cursor など）への組み込み手段を 2 つ提供しています。両者は併用できます。
+`rimo` は AI コーディングエージェント（Claude Code、Codex、Cursor など）への組み込み手段を 2 つ提供しています。両者は併用できます。Claude Code をお使いの場合は、プラグインでスキルをワンコマンド導入するのが最も簡単です。
+
+### Claude Code プラグイン（スキルをワンコマンドで）
+
+`rimo` プラグインは [エージェント用スキル](skills/rimo-cli/SKILL.md) を同梱しています。Claude Code に 1 コマンドで導入できます:
+
+```
+/plugin marketplace add rimoapp/cli
+/plugin install rimo@rimo
+```
+
+このリポジトリ自体がマーケットプレイスを兼ねているため、外部リポジトリへの依存はありません。別途 `rimo` バイナリを `$PATH` に置き、`rimo auth login` で認証しておく必要があります。スキルだけでエージェントは `rimo` CLI を通じて全機能を使えます。型付きツール（MCP）が欲しい場合は、下記の MCP サーバーを併用してください。
 
 ### MCP サーバー（型付きツール、MCP 対応クライアント向け）
 

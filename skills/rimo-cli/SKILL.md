@@ -24,7 +24,15 @@ This skill works with any AI agent that can read markdown documentation and exec
 
 ### With Claude Code
 
-Claude Code auto-discovers skills placed in either of these locations:
+**Recommended — install the `rimo` plugin.** It ships this skill in one step:
+
+```
+/plugin marketplace add rimoapp/cli
+/plugin install rimo@rimo
+```
+
+Or drop the skill file in manually — Claude Code auto-discovers skills placed in
+either of these locations:
 
 ```bash
 # Project-local (recommended for team-shared usage — commit to your repo)

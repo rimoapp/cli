@@ -1,0 +1,13 @@
+{
+  "name": "rimo",
+  "version": "1.0.0",
+  "description": "Rimo Voice integration for Claude Code. Ships the rimo-cli skill so the agent can drive the `rimo` CLI — list/read/search meeting notes, transcripts, documents, and AI Q&A. Requires the `rimo` CLI on your PATH and an authenticated session (`rimo auth login`).",
+  "author": {
+    "name": "Rimo",
+    "email": "support@rimo.app",
+    "url": "https://rimo.app"
+  },
+  "license": "LicenseRef-Proprietary",
+  "homepage": "https://rimo.app/about/ai-ready",
+  "repository": "https://github.com/rimoapp/cli"
+}

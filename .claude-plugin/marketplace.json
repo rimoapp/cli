@@ -1,0 +1,15 @@
+{
+  "name": "rimo",
+  "description": "Rimo's Claude Code plugins.",
+  "owner": {
+    "name": "Rimo",
+    "email": "support@rimo.app"
+  },
+  "plugins": [
+    {
+      "name": "rimo",
+      "source": "./",
+      "description": "Rimo Voice integration for Claude Code — ships the rimo-cli skill for driving the `rimo` CLI."
+    }
+  ]
+}
