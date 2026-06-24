@@ -207,6 +207,8 @@ What the note commands return depends on your access:
 
 - `rimo note list` (default) returns only notes **you own**.
 - `rimo note list --attended` returns notes **you participated in**.
+- `rimo note list --team <id>` returns **a team's notes across all its members**
+  (you must be a member of that team). Get team IDs with `rimo team list`.
 - Notes shared with you by URL only (not via ownership or participation) do **not**
   appear in any list, but you can still fetch one directly with
   `rimo note get <id>` if you have the ID.
@@ -220,20 +222,35 @@ List notes.
 **Syntax**
 
 ```
-rimo note list [--attended] [--page-size <int>] [--page-token <string>]
+rimo note list [--attended] [--team <id>] [--since <date>] [--until <date>]
+               [--updated-since <date>] [--page-size <int>] [--page-token <string>]
 ```
 
 **Default mode.** Lists notes created by the authenticated user.
 
 **`--attended` mode.** Lists notes the authenticated user participated in.
 
-Both modes are paginated via `--page-size` and `--page-token`.
+**`--team` mode.** Lists a team's notes across all its members. You must be a
+member of the team; otherwise the request is rejected. `--attended` cannot be
+combined with `--team` or the date filters.
+
+`--since` / `--until` filter by meeting time — a note's `held_at`, or its
+creation time if it has none. `--updated-since` filters by when a note was last
+updated, so you can fetch only what changed since your last run. Dates accept
+`YYYY-MM-DD` (read as JST) or an RFC3339 timestamp. `--until` is exclusive: a
+note held on the `--until` date itself is not returned.
+
+All modes are paginated via `--page-size` and `--page-token`.
 
 **Flags**
 
 | Flag | Type | Default | Description |
 |------|------|---------|-------------|
 | `--attended` | bool | `false` | List notes you participated in |
+| `--team` | string | `""` | List a team's notes across its members (team ID from `rimo team list`) |
+| `--since` | string | `""` | Only notes held on or after this date (`YYYY-MM-DD` or RFC3339) |
+| `--until` | string | `""` | Only notes held before this date (`YYYY-MM-DD` or RFC3339) |
+| `--updated-since` | string | `""` | Only notes updated on or after this date (`YYYY-MM-DD` or RFC3339) |
 | `--page-size` | int | `0` | Page size (`0` lets the server pick the default) |
 | `--page-token` | string | `""` | Cursor from a previous call's `next_page_token` |
 
@@ -245,6 +262,8 @@ rimo note list --fields id,title,created_at
 rimo note list --page-size 50
 rimo note list --attended --page-size 50
 rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
+rimo note list --team J9yyjDQLJWqhiSTH0sAT --since 2026-06-01 --until 2026-07-01
+rimo note list --team J9yyjDQLJWqhiSTH0sAT --updated-since 2026-06-08
 ```
 
 **Output (stdout, JSON)**
@@ -422,7 +441,8 @@ See [Output & errors](output-and-errors.md) for the error JSON shape and exit co
 
 ### `rimo team list`
 
-List teams in your organization.
+List teams in your organization. The returned team IDs can be passed to
+`rimo note list --team <id>` to list a team's notes across all its members.
 
 **Syntax**
 

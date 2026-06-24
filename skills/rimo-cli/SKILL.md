@@ -173,12 +173,17 @@ parse `message` for control flow.
 ```bash
 rimo note list                                  # notes owned by the authenticated user
 rimo note list --attended                       # notes the user attended
+rimo note list --team <id>                      # a team's notes across all members
+rimo note list --team <id> --since 2026-06-01 --until 2026-07-01  # held_at range
+rimo note list --updated-since 2026-06-08       # changed since last sync (incremental)
 rimo note list --page-size 50
 rimo note list --attended --page-size 50 --page-token "<cursor>"
 rimo note list --fields id,title,created_at     # smaller payload
 ```
 
-- Both modes are cursor-paginated via `--page-size` / `--page-token`.
+- `--team <id>` lists a team's notes across all members (you must be a member). Get IDs from `rimo team list`.
+- `--since`/`--until` filter by meeting time (`held_at`, falling back to creation time); `--updated-since` filters by update time. Dates are `YYYY-MM-DD` (JST) or RFC3339; `--until` is exclusive. `--attended` cannot combine with `--team` or the date filters.
+- All modes are cursor-paginated via `--page-size` / `--page-token`.
 - Response shape: `{ "notes": [...], "next_page_token": "..." }`. Loop until `next_page_token` is empty when you need everything.
 
 ### `rimo note get`

@@ -3,6 +3,15 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## v1.2.0
+
+### Added
+
+- Claude Code plugin — install the `rimo` agent skill in one command with
+  `/plugin marketplace add rimo/cli`, then `/plugin install rimo@rimo`.
+- `rimo note list` — new filters: `--team` lists a team's notes across its
+  members, and `--since` / `--until` / `--updated-since` filter notes by date.
+
 ## v1.1.0
 
 ### Added

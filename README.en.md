@@ -39,7 +39,7 @@ All commands print JSON to stdout by default. ([Why, and the exceptions →](doc
 | [`rimo auth logout`](docs/en/commands.md#rimo-auth-logout) | Revoke tokens and remove a saved account |
 | [`rimo auth status`](docs/en/commands.md#rimo-auth-status) | Show authenticated accounts |
 | [`rimo auth switch`](docs/en/commands.md#rimo-auth-switch) | Switch the active account |
-| [`rimo note list`](docs/en/commands.md#rimo-note-list)     | List notes (`--attended` for notes you participated in) |
+| [`rimo note list`](docs/en/commands.md#rimo-note-list)     | List notes (`--attended`, `--team`, `--since`/`--until`, `--updated-since`) |
 | [`rimo note get`](docs/en/commands.md#rimo-note-get)       | Get a note by ID (metadata, transcript, or document) |
 | [`rimo note search`](docs/en/commands.md#rimo-note-search) | Find notes by semantic similarity or keyword |
 | [`rimo note ask`](docs/en/commands.md#rimo-note-ask)       | Ask a question and get an AI-synthesised answer |

@@ -39,7 +39,7 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 | [`rimo auth logout`](docs/ja/commands.md#rimo-auth-logout) | トークンを失効させ、保存されたアカウントを削除 |
 | [`rimo auth status`](docs/ja/commands.md#rimo-auth-status) | 認証済みアカウントを表示 |
 | [`rimo auth switch`](docs/ja/commands.md#rimo-auth-switch) | アクティブなアカウントを切り替え |
-| [`rimo note list`](docs/ja/commands.md#rimo-note-list)     | ノートを一覧表示（参加したノートは `--attended`） |
+| [`rimo note list`](docs/ja/commands.md#rimo-note-list)     | ノートを一覧表示（`--attended`、`--team`、`--since`/`--until`、`--updated-since`） |
 | [`rimo note get`](docs/ja/commands.md#rimo-note-get)       | ID でノートを取得（メタデータ、文字起こし、ドキュメント） |
 | [`rimo note search`](docs/ja/commands.md#rimo-note-search) | 意味的類似度またはキーワードでノートを検索 |
 | [`rimo note ask`](docs/ja/commands.md#rimo-note-ask)       | 質問すると AI が統合した回答を返す |

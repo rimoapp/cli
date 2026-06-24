@@ -207,6 +207,8 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 
 - `rimo note list`（デフォルト）は**自分が所有する**ノートのみを返します。
 - `rimo note list --attended` は**自分が参加した**ノートを返します。
+- `rimo note list --team <id>` は**チームのメンバー全員のノート**を返します
+  （そのチームのメンバーである必要があります）。チーム ID は `rimo team list` で取得できます。
 - URL のみで共有された（所有や参加によらない）ノートはどの一覧にも**表示されません**が、
   ID があれば `rimo note get <id>` で直接取得できます。
 - アクセスできないノートに対する `rimo note get` は、ノートの存在を明かさずに
@@ -219,20 +221,33 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 **構文**
 
 ```
-rimo note list [--attended] [--page-size <int>] [--page-token <string>]
+rimo note list [--attended] [--team <id>] [--since <date>] [--until <date>]
+               [--updated-since <date>] [--page-size <int>] [--page-token <string>]
 ```
 
 **デフォルトモード。** 認証済みユーザーが作成したノートを一覧表示します。
 
 **`--attended` モード。** 認証済みユーザーが参加したノートを一覧表示します。
 
-どちらのモードも `--page-size` と `--page-token` でページネーションできます。
+**`--team` モード。** チームのメンバー全員のノートを一覧表示します。そのチームの
+メンバーである必要があり、そうでない場合はリクエストが拒否されます。`--attended` は
+`--team` や日付フィルタと併用できません。
+
+`--since` / `--until` は打ち合わせ日時（ノートの `held_at`。設定がない場合は作成日時）で絞り込みます。
+`--updated-since` は更新日時で絞り込むため、前回の取得以降に変更されたノートだけを取得したいときに便利です。
+日付は `YYYY-MM-DD`（JST として解釈）または RFC3339 形式で指定できます。`--until` はその日時を含みません。
+
+すべてのモードで `--page-size` と `--page-token` でページネーションできます。
 
 **フラグ**
 
 | フラグ | 型 | デフォルト | 説明 |
 |------|------|---------|-------------|
 | `--attended` | bool | `false` | 参加したノートを一覧表示 |
+| `--team` | string | `""` | チームのメンバー全員のノートを一覧表示（チーム ID は `rimo team list`） |
+| `--since` | string | `""` | この日時以降に開催されたノートのみ（`YYYY-MM-DD` または RFC3339） |
+| `--until` | string | `""` | この日時より前に開催されたノートのみ（`YYYY-MM-DD` または RFC3339） |
+| `--updated-since` | string | `""` | この日時以降に更新されたノートのみ（`YYYY-MM-DD` または RFC3339） |
 | `--page-size` | int | `0` | ページサイズ（`0` の場合はサーバー側のデフォルトに従う） |
 | `--page-token` | string | `""` | 前回の呼び出しの `next_page_token` |
 
@@ -244,6 +259,8 @@ rimo note list --fields id,title,created_at
 rimo note list --page-size 50
 rimo note list --attended --page-size 50
 rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
+rimo note list --team J9yyjDQLJWqhiSTH0sAT --since 2026-06-01 --until 2026-07-01
+rimo note list --team J9yyjDQLJWqhiSTH0sAT --updated-since 2026-06-08
 ```
 
 **出力（stdout, JSON）**
@@ -420,7 +437,8 @@ rimo note ask "今週の議事録を要約して"
 
 ### `rimo team list`
 
-組織内のチームを一覧表示します。
+組織内のチームを一覧表示します。返されたチーム ID は
+`rimo note list --team <id>` に渡して、チームのメンバー全員のノートを一覧表示できます。
 
 **構文**
 
