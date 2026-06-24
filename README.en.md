@@ -6,7 +6,7 @@
 
 Built for both humans and AI agents (Claude Code, Codex, etc.): every command speaks JSON by default and exposes its behavior through `--help`, so it slots cleanly into scripts and agent workflows.
 
-> **Official distribution repository.** Download binaries only from [Releases](https://github.com/rimoapp/cli/releases) and verify them against the published `checksums.txt` (see [Installation](docs/en/installation.md)).
+> **Official distribution repository.** Download binaries only from [Releases](https://github.com/rimo/cli/releases) and verify them against the published `checksums.txt` (see [Installation](docs/en/installation.md)).
 
 ## Install
 
@@ -77,7 +77,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 The `rimo` plugin ships the [agent skill](skills/rimo-cli/SKILL.md) so Claude Code can drive the CLI. Install it in one command:
 
 ```
-/plugin marketplace add rimoapp/cli
+/plugin marketplace add rimo/cli
 /plugin install rimo@rimo
 ```
 
@@ -109,12 +109,12 @@ Full setup for Claude Code, Codex, Cursor, and other MCP clients: [MCP server](d
 ```bash
 # Project-local (commit alongside your repo)
 mkdir -p .claude/skills/rimo-cli
-curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/rimo/cli/main/skills/rimo-cli/SKILL.md \
   -o .claude/skills/rimo-cli/SKILL.md
 
 # Or user-global
 mkdir -p ~/.claude/skills/rimo-cli
-curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/rimo/cli/main/skills/rimo-cli/SKILL.md \
   -o ~/.claude/skills/rimo-cli/SKILL.md
 ```
 

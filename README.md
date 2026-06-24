@@ -6,7 +6,7 @@
 
 人間と AI エージェント（Claude Code、Codex など）の両方のために作られています。すべてのコマンドはデフォルトで JSON を出力し、`--help` で挙動を確認できるため、スクリプトやエージェントのワークフローにそのまま組み込めます。
 
-> **公式配布リポジトリです。** バイナリは [Releases](https://github.com/rimoapp/cli/releases) からのみ取得し、公開されている `checksums.txt` で検証してください（[インストール](docs/ja/installation.md) を参照）。
+> **公式配布リポジトリです。** バイナリは [Releases](https://github.com/rimo/cli/releases) からのみ取得し、公開されている `checksums.txt` で検証してください（[インストール](docs/ja/installation.md) を参照）。
 
 ## インストール
 
@@ -77,7 +77,7 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 `rimo` プラグインは [エージェント用スキル](skills/rimo-cli/SKILL.md) を同梱しています。Claude Code に 1 コマンドで導入できます:
 
 ```
-/plugin marketplace add rimoapp/cli
+/plugin marketplace add rimo/cli
 /plugin install rimo@rimo
 ```
 
@@ -109,12 +109,12 @@ Claude Code、Codex、Cursor など他の MCP クライアントの完全なセ�
 ```bash
 # プロジェクト単位（リポジトリと一緒にコミット）
 mkdir -p .claude/skills/rimo-cli
-curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/rimo/cli/main/skills/rimo-cli/SKILL.md \
   -o .claude/skills/rimo-cli/SKILL.md
 
 # またはユーザー単位（全プロジェクトで利用可能）
 mkdir -p ~/.claude/skills/rimo-cli
-curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/rimo/cli/main/skills/rimo-cli/SKILL.md \
   -o ~/.claude/skills/rimo-cli/SKILL.md
 ```
 

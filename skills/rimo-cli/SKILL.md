@@ -5,7 +5,7 @@ description: Use the `rimo` CLI to interact with the Rimo Voice platform — lis
 
 # rimo CLI Skill
 
-This skill teaches AI coding agents (Claude Code, Codex, and others) how to use the [`rimo` command-line tool](https://github.com/rimoapp/cli) to access [Rimo Voice](https://rimo.app) meeting notes, transcripts, documents, and AI-powered Q&A — all from the terminal.
+This skill teaches AI coding agents (Claude Code, Codex, and others) how to use the [`rimo` command-line tool](https://github.com/rimo/cli) to access [Rimo Voice](https://rimo.app) meeting notes, transcripts, documents, and AI-powered Q&A — all from the terminal.
 
 `rimo` is purpose-built for both humans and AI agents:
 
@@ -27,7 +27,7 @@ This skill works with any AI agent that can read markdown documentation and exec
 **Recommended — install the `rimo` plugin.** It ships this skill in one step:
 
 ```
-/plugin marketplace add rimoapp/cli
+/plugin marketplace add rimo/cli
 /plugin install rimo@rimo
 ```
 
@@ -37,12 +37,12 @@ either of these locations:
 ```bash
 # Project-local (recommended for team-shared usage — commit to your repo)
 mkdir -p .claude/skills/rimo-cli
-curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/rimo/cli/main/skills/rimo-cli/SKILL.md \
   -o .claude/skills/rimo-cli/SKILL.md
 
 # Or user-global (available across all your projects)
 mkdir -p ~/.claude/skills/rimo-cli
-curl -fsSL https://raw.githubusercontent.com/rimoapp/cli/main/skills/rimo-cli/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/rimo/cli/main/skills/rimo-cli/SKILL.md \
   -o ~/.claude/skills/rimo-cli/SKILL.md
 ```
 
@@ -98,7 +98,7 @@ If `rimo` is not on `PATH`, stop and tell the user to install it:
 curl -fsSL https://rimo.app/cli/install.sh | sh
 ```
 
-(Or download the archive for their OS/arch from <https://github.com/rimoapp/cli/releases>, verify it against the published `checksums.txt`, and put `rimo` on their `PATH`.) Do not try to install it silently.
+(Or download the archive for their OS/arch from <https://github.com/rimo/cli/releases>, verify it against the published `checksums.txt`, and put `rimo` on their `PATH`.) Do not try to install it silently.
 
 ## 2. Authentication
 

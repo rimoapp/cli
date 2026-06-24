@@ -46,7 +46,7 @@ rimo version
 ## Manual install
 
 Prefer not to pipe a script into your shell? Download the archive for your platform
-from the [releases page](https://github.com/rimoapp/cli/releases), extract the
+from the [releases page](https://github.com/rimo/cli/releases), extract the
 `rimo` binary, and place it on your `PATH`.
 
 Each release publishes these archives plus a `checksums.txt`:
@@ -65,7 +65,7 @@ Each release publishes these archives plus a `checksums.txt`:
 ```bash
 # Example: macOS arm64 (Apple Silicon)
 VERSION=1.0.0
-curl -fsSL -O "https://github.com/rimoapp/cli/releases/download/v${VERSION}/rimo_${VERSION}_darwin_arm64.tar.gz"
+curl -fsSL -O "https://github.com/rimo/cli/releases/download/v${VERSION}/rimo_${VERSION}_darwin_arm64.tar.gz"
 tar -xzf "rimo_${VERSION}_darwin_arm64.tar.gz"
 mv rimo ~/.local/bin/
 rimo version
@@ -74,7 +74,7 @@ rimo version
 Verify the checksum before installing:
 
 ```bash
-curl -fsSL -O "https://github.com/rimoapp/cli/releases/download/v${VERSION}/checksums.txt"
+curl -fsSL -O "https://github.com/rimo/cli/releases/download/v${VERSION}/checksums.txt"
 shasum -a 256 -c checksums.txt --ignore-missing
 ```
 
@@ -85,7 +85,7 @@ shasum -a 256 -c checksums.txt --ignore-missing
 $Version = "1.0.0"
 $Archive = "rimo_${Version}_windows_amd64.zip"
 $BinDir  = "$env:USERPROFILE\.local\bin"
-Invoke-WebRequest -Uri "https://github.com/rimoapp/cli/releases/download/v${Version}/${Archive}" -OutFile $Archive
+Invoke-WebRequest -Uri "https://github.com/rimo/cli/releases/download/v${Version}/${Archive}" -OutFile $Archive
 Expand-Archive -Path $Archive -DestinationPath . -Force
 New-Item -ItemType Directory -Force -Path $BinDir | Out-Null
 Move-Item -Path .\rimo.exe -Destination $BinDir -Force
@@ -95,7 +95,7 @@ rimo version
 Verify the checksum before installing:
 
 ```powershell
-Invoke-WebRequest -Uri "https://github.com/rimoapp/cli/releases/download/v${Version}/checksums.txt" -OutFile "checksums.txt"
+Invoke-WebRequest -Uri "https://github.com/rimo/cli/releases/download/v${Version}/checksums.txt" -OutFile "checksums.txt"
 $line = (Select-String -Path checksums.txt -Pattern $Archive).Line
 $expected = ($line.Trim() -split '\s+')[0]
 $actual = (Get-FileHash -Algorithm SHA256 -Path $Archive).Hash.ToLower()
