@@ -39,7 +39,15 @@ Restart Claude Code so it spawns the new server. Rimo tools are added; ask natur
 
 ### Codex
 
-Codex picks up MCP servers from the same `.mcp.json` shape Claude Code uses. Add the snippet above, then restart Codex. If you are running a Codex configuration that does not auto-discover `.mcp.json`, point it at the file explicitly in its launch settings.
+Codex CLI does **not** read `.mcp.json`. It reads `~/.codex/config.toml` and registers MCP servers under `[mcp_servers.<name>]` (TOML). Add a `rimo` entry:
+
+```toml
+[mcp_servers.rimo]
+command = "rimo"
+args = ["mcp"]
+```
+
+Restart Codex so it spawns the new server. The Rimo tools become available; ask naturally and Codex routes to the right tool. If `rimo` is not on the `PATH` Codex inherits, set `command` to the absolute path (e.g. `command = "/usr/local/bin/rimo"`).
 
 ### Cursor
 

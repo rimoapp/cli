@@ -148,7 +148,7 @@ rimo auth logout [--account <id>]   # revoke + remove
 | Errors            | JSON on stdout (always, regardless of mode) |
 | `rimo version`    | Plain text on stdout |
 | `rimo upgrade`    | Plain text on stdout; progress on stderr |
-| `rimo note get --transcript / --document / --full / --document-id` | Plain text on stdout |
+| `rimo note get --transcript / --document / --full / --meeting-chat / --document-id` | Plain text on stdout |
 | `rimo note ask <question>` | Plain text on stdout (streamed); `Sources:` / `Fetch a note:` blocks follow |
 
 Everything you pipe to `jq` is safe **except** the plain-text exceptions above. For plain-text modes, treat stdout as opaque markdown/text.
@@ -198,6 +198,7 @@ rimo note get <note_id> --fields id,title      # filter the metadata JSON
 rimo note get <note_id> --transcript           # plain text: "Speaker: content" lines
 rimo note get <note_id> --document             # plain text: primary document markdown
 rimo note get <note_id> --full                 # plain text: transcript + document
+rimo note get <note_id> --meeting-chat         # plain text: "[HH:MM] sender: text" Zoom/Meet chat
 rimo note get <note_id> --list-documents       # JSON list of attached documents
 rimo note get <note_id> --document-id <doc_id> # plain text: specific document markdown
 ```
@@ -206,6 +207,7 @@ Mutually exclusive groups (combining them is rejected with an error):
 
 - `--list-documents` / `--document-id` ⛔ `--transcript` / `--document` / `--full`
 - `--list-documents` ⛔ `--document-id`
+- `--meeting-chat` ⛔ `--transcript` / `--document` / `--full` / `--list-documents` / `--document-id`
 
 When the user asks "summarize this Rimo note", the cheapest correct flow is usually:
 
@@ -215,13 +217,14 @@ rimo note get <note_id> --full     # one call, transcript + document as text
 
 ### `rimo note search`
 
-Find notes by semantic similarity (default) or keyword filter. Returns JSON in the same `{notes, total_count}` shape as `rimo note list` — use this when you want a *list of candidate notes*. Use `rimo note ask` when you want a synthesised answer instead.
+Find notes by semantic similarity (default), or by keyword and attribute filter. Returns JSON in the same `{notes, total_count}` shape as `rimo note list` — use this when you want a *list of candidate notes*. Use `rimo note ask` when you want a synthesised answer instead.
 
 ```bash
 rimo note search "release plan"                                # semantic (default)
 rimo note search "release plan" --limit 5                      # cap semantic results
 rimo note search "release" --mode=filter --per 5 --content-type transcripts
-rimo note search "release" --mode=filter --page 2 --per 20
+rimo note search "release" --mode=filter --team T_abc123       # keyword, scoped to a team
+rimo note search --mode=filter --team T_abc --since 2026-04-01 # filter-only browse (query omitted)
 rimo note search "release" --fields id,title | jq '.notes'
 ```
 
@@ -229,13 +232,18 @@ Flags:
 
 | Flag             | Mode     | Meaning                                                                 |
 |------------------|----------|-------------------------------------------------------------------------|
-| `--mode`         | both     | `semantic` (default, meaning-based) or `filter` (keyword + pagination). |
+| `--mode`         | both     | `semantic` (default, meaning-based) or `filter` (keyword and/or attribute search + pagination). |
 | `--limit`        | semantic | Max results (defaults to server-side).                                  |
 | `--page`         | filter   | 1-based page number (defaults to 1).                                    |
-| `--per`          | filter   | Page size (defaults to 10).                                             |
+| `--per`          | filter   | Page size (defaults to 10, max 100).                                    |
 | `--content-type` | filter   | Restrict to `all`/`transcripts`/`headings`/`annotations`/`title`/`document`. |
+| `--team`         | filter   | Restrict to one or more teams (repeatable / comma-separated; IDs from `rimo team list`). |
+| `--participant`  | filter   | Restrict to notes with these participant user IDs (repeatable / comma-separated). |
+| `--note-tag`     | filter   | Restrict to notes with these tag IDs (repeatable / comma-separated).    |
+| `--since`        | filter   | Only notes held on or after this date (`YYYY-MM-DD` as JST, or RFC3339). |
+| `--until`        | filter   | Only notes held before this date (same formats as `--since`).           |
 
-Passing a filter-only flag with `--mode=semantic` is rejected with an error. Filter mode populates `snippet`, `channel_id`, `owner_name`, `held_at`, `created_at` on each hit; semantic mode returns only `id` and `title` per hit (the semantic backend exposes less metadata). A `Fetch a note:` hint is written to **stderr** so stdout stays pipe-clean for `| jq`.
+In `--mode=filter` the query argument is optional — omit it to browse by filters alone. Passing a filter-only flag with `--mode=semantic` is rejected with an error. Filter mode populates `snippet`, `channel_id`, `owner_name`, `held_at`, `created_at` on each hit; semantic mode returns only `id` and `title` per hit (the semantic backend exposes less metadata). A `Fetch a note:` hint is written to **stderr** so stdout stays pipe-clean for `| jq`.
 
 ### `rimo note ask`
 
@@ -360,7 +368,7 @@ rimo note ask "<question>"
 - ❌ Don't hit the Rimo backend with raw `curl` — use `rimo`. The CLI handles token resolution, refresh, and error normalization.
 - ❌ Don't assume `note delete` / `note share` / `team create` / `team delete` / `user *` / `transcribe *` work — support is still under development. (`rimo team list` is available.)
 - ❌ Don't ignore the exit code. JSON on stdout + nonzero exit = error, not data.
-- ❌ Don't pipe `--transcript` / `--document` / `--full` / `--document-id` / `note ask` / `version` / `upgrade` into `jq` — those are plain text on stdout.
+- ❌ Don't pipe `--transcript` / `--document` / `--full` / `--meeting-chat` / `--document-id` / `note ask` / `version` / `upgrade` into `jq` — those are plain text on stdout.
 - ❌ Don't try `--yes` or any confirmation-skip flag — they don't exist. Safety is enforced via token scopes.
 - ❌ Don't run `rimo upgrade` on your own — let the user decide when to update.
 - ❌ Don't pass relative dates ("last week", "yesterday") to `jq` filters or CLI flags — convert to absolute `YYYY-MM-DD` first.

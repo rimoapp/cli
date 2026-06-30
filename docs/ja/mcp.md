@@ -39,7 +39,15 @@ Claude Code を再起動すると、新しいサーバーが起動します。Ri
 
 ### Codex
 
-Codex は Claude Code と同じ `.mcp.json` のスキーマで MCP サーバーを取り込みます。上記のスニペットを追加してから Codex を再起動してください。`.mcp.json` を自動検出しない Codex 設定の場合は、起動オプションでファイルパスを明示的に指定してください。
+Codex CLI は `.mcp.json` を読み込み **ません**。MCP サーバーは `~/.codex/config.toml` の `[mcp_servers.<name>]`（TOML）に登録します。`rimo` エントリを追加してください:
+
+```toml
+[mcp_servers.rimo]
+command = "rimo"
+args = ["mcp"]
+```
+
+追加したら Codex を再起動して新しいサーバーを起動させます。Rimo のツールが利用可能になり、自然に質問すれば Codex が適切なツールにルーティングします。Codex が引き継ぐ `PATH` に `rimo` が含まれていない場合は、`command` に絶対パスを指定してください（例: `command = "/usr/local/bin/rimo"`）。
 
 ### Cursor
 

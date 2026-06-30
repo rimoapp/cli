@@ -9,7 +9,7 @@
 **出力の取り決め。** すべてのコマンドはデフォルトで stdout に JSON を出力します。
 一部の人間向けコマンドは成功時にプレーンテキストを出力します（エラーは常に JSON）:
 `rimo version`、`rimo upgrade`、`rimo note ask`、および `--transcript` /
-`--document` / `--full` / `--document-id` を指定した `rimo note get`。
+`--document` / `--full` / `--meeting-chat` / `--document-id` を指定した `rimo note get`。
 
 **グローバルフラグ**（すべてのコマンドに適用）:
 
@@ -298,6 +298,7 @@ rimo note get <note_id> [flags]
 | `--transcript` | 文字起こしを `Speaker: content` 形式のプレーンテキストで出力。 |
 | `--document` | メインのドキュメントを Markdown のプレーンテキストで出力。 |
 | `--full` | 文字起こしに続けてメインのドキュメントを出力。 |
+| `--meeting-chat` | ウェブ会議のチャット（Recall 経由で取得した Zoom / Meet のチャット）を `[HH:MM] sender: text` 形式のプレーンテキストで出力。 |
 | `--list-documents` | ノートに添付されたドキュメントを一覧表示（JSON）。 |
 | `--document-id <id>` | ID で指定したドキュメントの Markdown を出力。 |
 
@@ -306,7 +307,10 @@ rimo note get <note_id> [flags]
 - `--list-documents` / `--document-id` は `--transcript` / `--document` / `--full` と
   併用できません。
 
-- 各フラグ（`--transcript`、`--document`、`--full`、`--document-id`）は stdout に 
+- `--meeting-chat` は単独の出力で、`--transcript` / `--document` / `--full` /
+  `--list-documents` / `--document-id` と併用できません。
+
+- 各フラグ（`--transcript`、`--document`、`--full`、`--meeting-chat`、`--document-id`）は stdout に 
 JSON ではなく、プレーンテキストを出力します。
 
 **例**
@@ -316,6 +320,7 @@ rimo note get note_abc123                          # メタデータ JSON
 rimo note get note_abc123 --transcript             # プレーンテキストの文字起こし
 rimo note get note_abc123 --document               # 主ドキュメントの Markdown
 rimo note get note_abc123 --full                    # 文字起こし + ドキュメント
+rimo note get note_abc123 --meeting-chat           # Zoom/Meet チャットのプレーンテキスト
 rimo note get note_abc123 --list-documents         # ドキュメントの JSON 一覧
 rimo note get note_abc123 --document-id doc_xyz    # 特定ドキュメントの Markdown
 rimo note get note_abc123 --fields id,title        # JSON メタデータをフィルタ
@@ -329,25 +334,33 @@ rimo note get note_abc123 --fields id,title        # JSON メタデータをフ�
 
 ### `rimo note search`
 
-意味的類似度（デフォルト）またはキーワードフィルターでノートを検索します。
+意味的類似度（デフォルト）、またはキーワードと属性フィルターでノートを検索します。
 `rimo note list` と同じ `{notes, total_count}` 形式の JSON を返します。一覧ではなく
 統合された回答が欲しい場合は [`rimo note ask`](#rimo-note-ask) を使ってください。
 
 **構文**
 
 ```
-rimo note search <query> [--mode=semantic|filter] [flags]
+rimo note search [query] [--mode=semantic|filter] [flags]
 ```
+
+`--mode=filter` では `query` は**任意**です。省略すると、フィルター（チーム・期間・
+参加者・タグ）だけで開催日時の新しい順に絞り込めます。
 
 **フラグ**
 
 | フラグ | 説明 |
 |------|-------------|
-| `--mode` | `semantic`（デフォルト）は意味でノートをランク付けし、`filter` はページネーション付きのキーワード検索を行う。 |
+| `--mode` | `semantic`（デフォルト）は意味でノートをランク付けし、`filter` はページネーション付きのキーワード／属性検索を行う。 |
 | `--limit` | `--mode=semantic` の最大結果数。 |
 | `--page` | `--mode=filter` のページ番号（1 始まり、デフォルト 1）。 |
-| `--per` | `--mode=filter` のページサイズ（デフォルト 10）。 |
+| `--per` | `--mode=filter` のページサイズ（デフォルト 10、最大 100）。 |
 | `--content-type` | `--mode=filter` を次のいずれかに限定: `all` `transcripts` `headings` `annotations` `title` `document`。 |
+| `--team` | `--mode=filter` 専用。1 つ以上のチームに絞り込む。繰り返しまたはカンマ区切り。チーム ID は `rimo team list` で取得。 |
+| `--participant` | `--mode=filter` 専用。指定した参加者ユーザー ID を含むノートに絞り込む。繰り返しまたはカンマ区切り。 |
+| `--note-tag` | `--mode=filter` 専用。指定したタグ ID を持つノートに絞り込む。繰り返しまたはカンマ区切り。 |
+| `--since` | `--mode=filter` 専用。この日時以降に開催されたノートのみ。`YYYY-MM-DD`（JST として解釈）または RFC3339 タイムスタンプ。 |
+| `--until` | `--mode=filter` 専用。この日時より前に開催されたノートのみ。`--since` と同じ形式。 |
 
 **出力**
 
@@ -374,6 +387,9 @@ stdout に JSON `{notes: [...], total_count: <int>}` を出力します。`Fetch
 rimo note search "release plan"                                # セマンティック（デフォルト）
 rimo note search "release plan" --limit 5
 rimo note search "release" --mode=filter --per 5 --content-type transcripts
+rimo note search "release" --mode=filter --team T_abc123        # キーワード + チーム絞り込み
+rimo note search --mode=filter --team T_abc --since 2026-04-01  # フィルターのみ（query 省略）
+rimo note search --mode=filter --since 2026-04-01 --until 2026-07-01
 rimo note search "release" --mode=filter | jq '.notes[].id'
 ```
 

@@ -3,6 +3,23 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## v1.2.1
+
+### Added
+
+- Personal API key authentication — set `RIMO_API_KEY` to a `rimo_pat_…` key to
+  use the CLI without a browser login (ideal for headless and CI use). See the
+  personal API key guide.
+- `rimo note search` — new filters in filter mode: `--team`, `--participant`,
+  `--note-tag`, and `--since` / `--until` for a date range.
+- `rimo note get --meeting-chat` — fetch the in-meeting chat (Zoom / Google
+  Meet) for a note.
+
+### Fixed
+
+- The `rimo mcp` server now marks `note_ask` and `note_semantic_search` as
+  read-only, so MCP clients correctly show that they make no changes.
+
 ## v1.2.0
 
 ### Added

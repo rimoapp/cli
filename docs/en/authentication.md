@@ -5,6 +5,11 @@
 `rimo` authenticates with Rimo Voice through a browser-based login. Tokens are
 stored securely by your OS credential store, never in a text file.
 
+For automation where no one can open a browser — CI/CD pipelines, scripts,
+scheduled jobs — authenticate with a **personal API key** instead. See
+[API key authentication (CI/CD)](#api-key-authentication-cicd) below, and
+[Personal API keys](personal-api-keys.md) for how to create and manage keys.
+
 ## Logging in
 
 ```bash
@@ -32,6 +37,22 @@ rimo auth login --no-browser
 3. Paste the code back into your terminal.
 4. Tokens are stored as above.
 
+## API key authentication (CI/CD)
+
+For non-interactive use, set the `RIMO_API_KEY` environment variable to a
+personal API key created in the Rimo web app. No browser login is needed:
+
+```bash
+export RIMO_API_KEY="rimo_pat_…"
+rimo note list        # authenticates with the key directly
+```
+
+When `RIMO_API_KEY` is set it takes precedence over any logged-in account (see
+[Account selection priority](#account-selection-priority)). Create the key in
+**Settings → API Key** and store it as a CI secret. Full instructions —
+including expiry, the per-organization policy, and deactivation — are in
+[Personal API keys](personal-api-keys.md).
+
 ## Multiple accounts
 
 Each successful login creates an account alias derived from your email and
@@ -49,11 +70,13 @@ resolution rules.
 
 ## Account selection priority
 
-When a command needs an account, `rimo` resolves it in this order:
+When a command needs credentials, `rimo` resolves them in this order:
 
-1. `--account <alias>` flag → config lookup → stored credentials.
-2. `active_account` from config → stored credentials.
-3. If none resolve, the command exits with an authentication error and the
+1. `RIMO_API_KEY` environment variable — a personal API key (`rimo_pat_…`), used
+   as-is. See [Personal API keys](personal-api-keys.md).
+2. `--account <alias>` flag → config lookup → stored credentials.
+3. `active_account` from config → stored credentials.
+4. If none resolve, the command exits with an authentication error and the
    message *"Run `rimo auth login`"*.
 
 ## Where credentials live

@@ -9,7 +9,7 @@ Complete reference for every `rimo` command. For installation see
 **Output contract.** All commands print JSON to stdout by default. A few
 human-facing commands print plain text on success (errors are always JSON):
 `rimo version`, `rimo upgrade`, `rimo note ask`, and `rimo note get` with
-`--transcript` / `--document` / `--full` / `--document-id`.
+`--transcript` / `--document` / `--full` / `--meeting-chat` / `--document-id`.
 
 **Global flags** (apply to every command):
 
@@ -302,6 +302,7 @@ rimo note get <note_id> [flags]
 | `--transcript` | Print the transcript as plain text in `Speaker: content` form. |
 | `--document` | Print the primary document as markdown plain text. |
 | `--full` | Print transcript followed by the primary document. |
+| `--meeting-chat` | Print the web meeting chat (Zoom/Meet, captured via Recall) as plain text in `[HH:MM] sender: text` form. |
 | `--list-documents` | List documents attached to the note (JSON). |
 | `--document-id <id>` | Print a specific document's markdown by ID. |
 
@@ -310,8 +311,10 @@ rimo note get <note_id> [flags]
 - `--list-documents` / `--document-id` cannot be combined with `--transcript` /
   `--document` / `--full`.
 - `--list-documents` and `--document-id` are mutually exclusive.
-- The content flags (`--transcript`, `--document`, `--full`, `--document-id`)
-  print plain text to stdout, not JSON.
+- `--meeting-chat` is its own output and cannot be combined with `--transcript` /
+  `--document` / `--full` / `--list-documents` / `--document-id`.
+- The content flags (`--transcript`, `--document`, `--full`, `--meeting-chat`,
+  `--document-id`) print plain text to stdout, not JSON.
 
 **Examples**
 
@@ -320,6 +323,7 @@ rimo note get note_abc123                          # metadata JSON
 rimo note get note_abc123 --transcript             # plain-text transcript
 rimo note get note_abc123 --document               # primary document markdown
 rimo note get note_abc123 --full                    # transcript + document
+rimo note get note_abc123 --meeting-chat           # plain-text Zoom/Meet chat
 rimo note get note_abc123 --list-documents         # JSON list of documents
 rimo note get note_abc123 --document-id doc_xyz    # specific document markdown
 rimo note get note_abc123 --fields id,title        # filter the JSON metadata
@@ -333,26 +337,34 @@ See [Output & errors](output-and-errors.md) for the error JSON shape and exit co
 
 ### `rimo note search`
 
-Find notes by semantic similarity (default) or keyword filter. Returns JSON in the
-same `{notes, total_count}` shape as `rimo note list`. Use
+Find notes by semantic similarity (default), or by keyword and attribute filter.
+Returns JSON in the same `{notes, total_count}` shape as `rimo note list`. Use
 [`rimo note ask`](#rimo-note-ask) when you want a synthesised answer instead of a
 list.
 
 **Syntax**
 
 ```
-rimo note search <query> [--mode=semantic|filter] [flags]
+rimo note search [query] [--mode=semantic|filter] [flags]
 ```
+
+In `--mode=filter` the `query` is **optional**: omit it to browse by filters alone
+(team, date range, participant, tag), newest first.
 
 **Flags**
 
 | Flag | Description |
 |------|-------------|
-| `--mode` | `semantic` (default) ranks notes by meaning; `filter` does keyword search with pagination. |
+| `--mode` | `semantic` (default) ranks notes by meaning; `filter` does keyword and/or attribute search with pagination. |
 | `--limit` | Max results for `--mode=semantic`. |
 | `--page` | Page number for `--mode=filter` (1-based, default 1). |
-| `--per` | Page size for `--mode=filter` (default 10). |
+| `--per` | Page size for `--mode=filter` (default 10, max 100). |
 | `--content-type` | Limit `--mode=filter` to one of: `all` `transcripts` `headings` `annotations` `title` `document`. |
+| `--team` | `--mode=filter` only: restrict to one or more teams. Repeatable or comma-separated; team IDs come from `rimo team list`. |
+| `--participant` | `--mode=filter` only: restrict to notes with these participant user IDs. Repeatable or comma-separated. |
+| `--note-tag` | `--mode=filter` only: restrict to notes with these tag IDs. Repeatable or comma-separated. |
+| `--since` | `--mode=filter` only: only notes held on or after this date. `YYYY-MM-DD` (interpreted as JST) or an RFC3339 timestamp. |
+| `--until` | `--mode=filter` only: only notes held before this date. Same formats as `--since`. |
 
 **Output**
 
@@ -378,6 +390,9 @@ semantic search returns less metadata per result.
 rimo note search "release plan"                                # semantic (default)
 rimo note search "release plan" --limit 5
 rimo note search "release" --mode=filter --per 5 --content-type transcripts
+rimo note search "release" --mode=filter --team T_abc123        # keyword, scoped to a team
+rimo note search --mode=filter --team T_abc --since 2026-04-01  # filter-only browse (no query)
+rimo note search --mode=filter --since 2026-04-01 --until 2026-07-01
 rimo note search "release" --mode=filter | jq '.notes[].id'
 ```
 

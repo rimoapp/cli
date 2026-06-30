@@ -62,6 +62,7 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 
 - [Installation](docs/en/installation.md) — install, upgrade, uninstall
 - [Authentication](docs/en/authentication.md) — browser-based login and accounts
+- [Personal API keys](docs/en/personal-api-keys.md) — create keys in the web app and authenticate with `RIMO_API_KEY` for CI/CD
 - [Commands](docs/en/commands.md) — full reference with flags and examples
 - [Configuration](docs/en/configuration.md) — `config.yaml`, credential storage, environment variables
 - [Output & errors](docs/en/output-and-errors.md) — JSON design, `--fields`/`--excludes`, exit codes

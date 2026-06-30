@@ -62,6 +62,7 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 
 - [インストール](docs/ja/installation.md) — インストール、アップグレード、アンインストール
 - [認証](docs/ja/authentication.md) — ブラウザベースのログインとアカウント
+- [個人用 APIキー](docs/ja/personal-api-keys.md) — Web アプリでキーを作成し、CI/CD 向けに `RIMO_API_KEY` で認証
 - [コマンド](docs/ja/commands.md) — フラグと例を含む完全なリファレンス
 - [設定](docs/ja/configuration.md) — `config.yaml`、認証情報の保存、環境変数
 - [出力とエラー](docs/ja/output-and-errors.md) — JSON 設計、`--fields`/`--excludes`、終了コード
