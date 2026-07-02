@@ -1,0 +1,289 @@
+/* ─── Rimo brand tokens — sourced from rimo.app CSS, June 2026 ─── */
+/*
+ * VitePress button convention:
+ *   brand-3 = button default bg  (must be the primary orange #F14C00)
+ *   brand-2 = button hover bg    (orange-700 #CC3802, slightly darker)
+ *   brand-1 = button active/link (primary orange #F14C00, same as brand-3)
+ *
+ * rimo.app design tokens:
+ *   primary-main:    #F14C00   (--rimo-palette-primary-main)
+ *   orange-700:      #CC3802   (--color-orange-700)
+ *   primary-dark:    #E91800   (--rimo-palette-primary-dark)
+ *   primary-light:   #FD9F00   (--rimo-palette-primary-light)
+ *   background:      #F9F9F9   (--rimo-palette-background-default)
+ *   background-light:#EEEEEE   (--rimo-palette-background-light)
+ *   border:          #DDDDDD   (--rimo-palette-border)
+ *   text-primary:    #0A0A0A   (--foreground)
+ *   text-secondary:  #707070   (≈ --rimo-palette-text-secondary over white)
+ *   font-mono:       ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas…
+ */
+:root {
+  /* VitePress brand variables */
+  --vp-c-brand-1:    #F14C00;  /* links, active nav, button active state     */
+  --vp-c-brand-2:    #CC3802;  /* button hover, link hover (orange-700)      */
+  --vp-c-brand-3:    #F14C00;  /* hero button DEFAULT bg — must = primary    */
+  --vp-c-brand-soft: rgba(241, 76, 0, 0.12);
+  --vp-c-bg:         #F9F9F9;  /* --rimo-palette-background-default          */
+
+  /* Rimo palette tokens */
+  --rimo-orange:      #F14C00;  /* --rimo-palette-primary-main               */
+  --rimo-orange-2:    #FD9F00;  /* --rimo-palette-primary-light              */
+  --rimo-dark:        #0A0A0A;  /* --foreground                              */
+  --rimo-warm-white:  #F9F9F9;  /* --rimo-palette-background-default         */
+  --rimo-surface:     #EEEEEE;  /* --rimo-palette-background-light           */
+  --rimo-border:      #DDDDDD;  /* --rimo-palette-border                     */
+  --rimo-muted:       #707070;  /* ≈ --rimo-palette-text-secondary over white */
+  --rimo-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+}
+
+.dark {
+  --vp-c-brand-1:    #FF6B1A;  /* links on dark bg (lighter, readable)       */
+  --vp-c-brand-2:    #F14C00;  /* hover on dark bg                           */
+  --vp-c-brand-3:    #FF6B1A;  /* hero button DEFAULT on dark — matches links */
+  --vp-c-brand-soft: rgba(255, 107, 26, 0.14);
+  --vp-c-bg:         #171717;  /* --background dark (rimo.app)               */
+}
+
+/* ─── Navbar logo ─── */
+.VPNavBarTitle .logo {
+  height: 28px;
+  width: 28px;
+  border-radius: 50%;
+}
+
+/* ─── HOME PAGE CUSTOM SECTIONS ─────────────────────────────── */
+.home-custom {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ─── Section wrapper ─── */
+.hs {
+  padding: 72px 0;
+  border-top: 1px solid var(--rimo-border);
+}
+.hs:first-child { border-top: none; }
+
+/* ─── Eyebrow ─── */
+.hs-eye {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--rimo-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rimo-orange);
+  margin-bottom: 16px;
+}
+.hs-eye::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--rimo-orange);
+  border-radius: 1px;
+}
+
+/* ─── Section heading ─── */
+.hs-heading {
+  font-size: clamp(22px, 3.5vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--rimo-dark);
+  margin-bottom: 12px;
+}
+.dark .hs-heading { color: #FAFAFA; }
+
+.hs-sub {
+  font-size: 16px;
+  color: var(--rimo-muted);
+  line-height: 1.65;
+  max-width: 560px;
+  margin-bottom: 48px;
+}
+
+/* ─── PROBLEM — three-col cards ─── */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--rimo-border);
+  border: 1px solid var(--rimo-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.problem-card {
+  background: var(--rimo-warm-white);
+  padding: 28px 24px;
+}
+.dark .problem-card { background: #252525; }  /* --rimo-palette-background-experimental-layeredDefault */
+
+.prob-num {
+  font-family: var(--rimo-mono);
+  font-size: 11px;
+  color: var(--rimo-orange);
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.prob-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--rimo-dark);
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+.dark .prob-title { color: #FAFAFA; }
+
+.prob-body {
+  font-size: 13px;
+  color: var(--rimo-muted);
+  line-height: 1.65;
+}
+
+
+
+/* ─── Stat callout ─── */
+.stat-strip {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--rimo-dark);
+  border-radius: 8px;
+  padding: 20px 28px;
+  margin-top: 20px;
+}
+
+.stat-main {
+  font-family: var(--rimo-mono);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--rimo-orange);
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #8F8F8F;  /* ≈ --rimo-palette-text-secondary on dark surface */
+  line-height: 1.5;
+  max-width: 360px;
+}
+
+.stat-label strong { color: #FAFAFA; }
+
+/* ─── QUICKSTART ─── */
+.qs-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.qs-step {
+  display: flex;
+  gap: 18px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rimo-border);
+}
+.qs-step:last-child { border-bottom: none; }
+
+.qs-step-num {
+  font-family: var(--rimo-mono);
+  font-size: 11px;
+  color: var(--rimo-orange);
+  flex-shrink: 0;
+  padding-top: 3px;
+  width: 28px;
+}
+
+.qs-step-title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--rimo-dark);
+  margin-bottom: 4px;
+}
+.dark .qs-step-title { color: #FAFAFA; }
+
+.qs-step-body {
+  font-size: 13px;
+  color: var(--rimo-muted);
+  line-height: 1.6;
+}
+
+/* ─── Final CTA ─── */
+.home-cta {
+  text-align: center;
+  padding: 64px 24px;
+  border-top: 1px solid var(--rimo-border);
+}
+
+.home-cta-heading {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--rimo-dark);
+  margin-bottom: 12px;
+}
+.dark .home-cta-heading { color: #FAFAFA; }
+
+.home-cta-sub {
+  font-size: 15px;
+  color: var(--rimo-muted);
+  margin-bottom: 28px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-btn-primary {
+  display: inline-block;
+  background: var(--rimo-orange);
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 6px;
+  text-decoration: none !important;
+  transition: background 0.15s;
+}
+.cta-btn-primary:hover { background: var(--vp-c-brand-2); }
+
+.cta-btn-secondary {
+  display: inline-block;
+  color: var(--rimo-dark) !important;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 6px;
+  border: 1px solid var(--rimo-border);
+  text-decoration: none !important;
+  transition: border-color 0.15s;
+}
+.dark .cta-btn-secondary { color: #FAFAFA !important; border-color: #404040; }  /* --border dark */
+.cta-btn-secondary:hover { border-color: var(--rimo-orange); }
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .problem-grid { grid-template-columns: 1fr; }
+  .qs-grid      { grid-template-columns: 1fr; }
+  .pillar       { grid-template-columns: 48px 1fr; gap: 0 16px; }
+  .pillar-num-big { font-size: 28px; }
+  .stat-strip   { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .home-custom  { padding: 0 16px 60px; }
+  .hs { padding: 48px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pillar-num-big { transition: none; }
+  .cta-btn-primary, .cta-btn-secondary { transition: none; }
+}
