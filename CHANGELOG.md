@@ -3,6 +3,28 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## v1.2.2
+
+### Added
+
+- **Claude Desktop extension** — install `rimo` in Claude Desktop with one
+  click. The extension bundles the CLI binaries, so you can connect Rimo in
+  Claude Desktop without touching a terminal.
+- `rimo note list --today` / `--week` — list notes held today or this week
+  (JST) without typing out a date range.
+- `rimo mcp` `note_read` — read a note's contents as text or markdown directly
+  from MCP clients, instead of fetching raw JSON.
+
+### Changed
+
+- `rimo mcp` tools now have clearer English titles and "when to use"
+  descriptions, so MCP clients present them better.
+
+### Fixed
+
+- `rimo mcp` `note_get` now returns a note's metadata only by default, instead
+  of pulling its full contents unexpectedly.
+
 ## v1.2.1
 
 ### Added

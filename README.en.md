@@ -66,7 +66,8 @@ Full flag-by-flag reference: [Commands](docs/en/commands.md).
 - [Commands](docs/en/commands.md) — full reference with flags and examples
 - [Configuration](docs/en/configuration.md) — `config.yaml`, credential storage, environment variables
 - [Output & errors](docs/en/output-and-errors.md) — JSON design, `--fields`/`--excludes`, exit codes
-- [MCP server](docs/en/mcp.md) — expose `rimo` as typed tools to Claude Code, Codex, Cursor, and other MCP clients
+- [What you can do with MCP](docs/en/mcp.md) — what an AI assistant can look up and answer from your Rimo notes
+- [Rimo in Coding Tools](docs/en/setup-guide.md) — connect the `rimo` MCP server in Claude Code, Codex CLI, Cursor, and Claude Desktop
 - [Troubleshooting](docs/en/troubleshooting.md) — common install, login, and PATH issues
 
 ## AI agents
@@ -101,7 +102,11 @@ Restart your client and ask naturally:
 - *"Summarize my Rimo notes from this week"*
 - *"Find Rimo notes about the Q3 release plan"*
 
-Full setup for Claude Code, Codex, Cursor, and other MCP clients: [MCP server](docs/en/mcp.md).
+Full setup for Claude Code, Codex, Cursor, and other MCP clients: [Rimo in Coding Tools](docs/en/setup-guide.md).
+
+### Claude Desktop (one-click extension)
+
+Claude Desktop installs MCP servers as **extensions** — download `rimo.mcpb` from the [latest release](https://github.com/rimo/cli/releases/latest) and drop it onto **Settings → Extensions**. Everything is included — no CLI install, no config file editing. Sign in by pasting a [personal API key](docs/en/personal-api-keys.md) into the extension settings (CLI users can leave it blank to reuse their `rimo auth login` session). Details: [Rimo in Coding Tools → Claude Desktop](docs/en/setup-guide.md#claude-desktop-one-click-extension).
 
 ### Agent skill (works with any agent that runs shell commands)
 

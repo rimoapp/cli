@@ -174,6 +174,8 @@ parse `message` for control flow.
 rimo note list                                  # notes owned by the authenticated user
 rimo note list --attended                       # notes the user attended
 rimo note list --team <id>                      # a team's notes across all members
+rimo note list --today                          # notes held today (JST)
+rimo note list --week                           # notes held in the trailing 7 days (JST)
 rimo note list --team <id> --since 2026-06-01 --until 2026-07-01  # held_at range
 rimo note list --updated-since 2026-06-08       # changed since last sync (incremental)
 rimo note list --page-size 50
@@ -183,6 +185,7 @@ rimo note list --fields id,title,created_at     # smaller payload
 
 - `--team <id>` lists a team's notes across all members (you must be a member). Get IDs from `rimo team list`.
 - `--since`/`--until` filter by meeting time (`held_at`, falling back to creation time); `--updated-since` filters by update time. Dates are `YYYY-MM-DD` (JST) or RFC3339; `--until` is exclusive. `--attended` cannot combine with `--team` or the date filters.
+- `--today`/`--week` are JST shortcuts that expand into `--since`/`--until` (today, or the trailing 7 days). They cannot be combined with `--since`/`--until`, with each other, or with `--attended`.
 - All modes are cursor-paginated via `--page-size` / `--page-token`.
 - Response shape: `{ "notes": [...], "next_page_token": "..." }`. Loop until `next_page_token` is empty when you need everything.
 
@@ -355,6 +358,21 @@ The same pattern works for any time range — always substitute the absolute sta
 ```bash
 rimo note search "<topic>" --fields id,title
 ```
+
+**"Find notes from the <team-folder name> folder":** a team-folder name shown in the app
+(e.g. "Voicy_Public_Recordings"; users may also say "room" or "channel") is a **team name**,
+not searchable text — passing it to `note search`'s free-text `query` silently returns
+unrelated notes, not an error. Resolve the name to a team id via `rimo team list`, then
+filter by `--team`.
+
+```bash
+rimo team list --fields id,name | jq '.teams[] | select(.name | test("<room name>"; "i"))'
+rimo note search --mode=filter --team <team_id> --fields id,title,held_at             # browse, newest first
+rimo note search "<topic>" --mode=filter --team <team_id> --fields id,title,held_at   # keyword search within the room
+```
+
+If the user instead pastes a `https://rimo.app/channels/<id>_team` URL, the team id is the
+`<id>` segment directly — no need to call `rimo team list`.
 
 **"What did we decide about X across all our meetings?":** this is the ask case.
 

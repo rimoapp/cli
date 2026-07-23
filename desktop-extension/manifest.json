@@ -1,0 +1,80 @@
+{
+  "manifest_version": "0.3",
+  "name": "rimo",
+  "display_name": "Rimo",
+  "version": "0.2.1",
+  "description": "Rimo Voice for Claude Desktop — list, read, search, and ask across your meeting notes, transcripts, and documents.",
+  "long_description": "Connects Claude Desktop to your Rimo Voice workspace. Once installed, Claude can list your notes, fetch transcripts and attached documents, search by keyword or meaning, and answer natural-language questions across your notes.\n\nEverything needed is included — no separate install. To sign in, paste a personal API key (created in the Rimo web app) into the extension settings. If you also use the `rimo` CLI, you can leave the key blank and the extension reuses your `rimo auth login` session.",
+  "author": {
+    "name": "Rimo",
+    "email": "support@rimo.app",
+    "url": "https://rimo.app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rimo/cli"
+  },
+  "homepage": "https://rimo.app/about/ai-ready",
+  "documentation": "https://github.com/rimo/cli/blob/main/docs/en/mcp.md",
+  "support": "https://github.com/rimo/cli/issues",
+  "license": "LicenseRef-Proprietary",
+  "icon": "icon.png",
+  "icons": [
+    { "src": "icon-16.png", "size": "16x16" },
+    { "src": "icon-32.png", "size": "32x32" },
+    { "src": "icon-128.png", "size": "128x128" },
+    { "src": "icon.png", "size": "512x512" }
+  ],
+  "keywords": [
+    "rimo",
+    "meeting notes",
+    "transcription",
+    "voice",
+    "notes",
+    "mcp"
+  ],
+  "server": {
+    "type": "binary",
+    "entry_point": "server/rimo",
+    "mcp_config": {
+      "command": "${__dirname}/server/rimo",
+      "args": ["mcp"],
+      "env": {
+        "RIMO_API_KEY": "${user_config.api_key}"
+      },
+      "platform_overrides": {
+        "win32": {
+          "command": "${__dirname}/server/rimo.exe"
+        }
+      }
+    }
+  },
+  "tools": [
+    { "name": "note_list", "description": "List your notes (supports pagination)." },
+    { "name": "note_list_attended", "description": "List notes you participated in as an attendee." },
+    { "name": "note_get", "description": "Fetch one note by ID (metadata by default; meta=false for full contents)." },
+    { "name": "note_list_participants", "description": "List a note's participants." },
+    { "name": "note_list_documents", "description": "List documents attached to a note." },
+    { "name": "note_get_document", "description": "Fetch one document by ID from a note." },
+    { "name": "note_get_meeting_chat", "description": "Fetch a note's meeting-chat log." },
+    { "name": "note_search", "description": "Keyword search across your notes." },
+    { "name": "note_semantic_search", "description": "Concept / meaning-based note retrieval." },
+    { "name": "note_ask", "description": "Natural-language Q&A with an AI-synthesised answer plus sources." },
+    { "name": "team_list", "description": "List teams in your organization." },
+    { "name": "rimo_auth_status", "description": "List configured Rimo accounts." }
+  ],
+  "user_config": {
+    "api_key": {
+      "type": "string",
+      "title": "Rimo API key (optional)",
+      "description": "Create a key in the Rimo web app (Settings → API Key) and paste it here. Leave blank if you already signed in with `rimo auth login`.",
+      "sensitive": true,
+      "required": false,
+      "default": ""
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32"]
+  }
+}

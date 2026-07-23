@@ -1,0 +1,4 @@
+# Keep the packed .mcpb bundle to just manifest.json and icon.png — this dir's
+# docs are for maintainers building the bundle, not for shipping inside it.
+README.md
+.mcpbignore

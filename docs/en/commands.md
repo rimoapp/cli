@@ -222,8 +222,9 @@ List notes.
 **Syntax**
 
 ```
-rimo note list [--attended] [--team <id>] [--since <date>] [--until <date>]
-               [--updated-since <date>] [--page-size <int>] [--page-token <string>]
+rimo note list [--attended] [--team <id>] [--today] [--week]
+               [--since <date>] [--until <date>] [--updated-since <date>]
+               [--page-size <int>] [--page-token <string>]
 ```
 
 **Default mode.** Lists notes created by the authenticated user.
@@ -240,6 +241,12 @@ updated, so you can fetch only what changed since your last run. Dates accept
 `YYYY-MM-DD` (read as JST) or an RFC3339 timestamp. `--until` is exclusive: a
 note held on the `--until` date itself is not returned.
 
+`--today` and `--week` are shortcuts for the two most common held_at ranges:
+`--today` lists notes held today, `--week` those held in the trailing 7 days
+(today plus the previous six). Both are evaluated in JST and are exactly
+equivalent to setting `--since`/`--until` by hand, so they cannot be combined
+with either (or with each other, or with `--attended`).
+
 All modes are paginated via `--page-size` and `--page-token`.
 
 **Flags**
@@ -248,6 +255,8 @@ All modes are paginated via `--page-size` and `--page-token`.
 |------|------|---------|-------------|
 | `--attended` | bool | `false` | List notes you participated in |
 | `--team` | string | `""` | List a team's notes across its members (team ID from `rimo team list`) |
+| `--today` | bool | `false` | Shortcut for notes held today (JST); conflicts with `--since`/`--until` |
+| `--week` | bool | `false` | Shortcut for notes held in the trailing 7 days (JST); conflicts with `--since`/`--until` |
 | `--since` | string | `""` | Only notes held on or after this date (`YYYY-MM-DD` or RFC3339) |
 | `--until` | string | `""` | Only notes held before this date (`YYYY-MM-DD` or RFC3339) |
 | `--updated-since` | string | `""` | Only notes updated on or after this date (`YYYY-MM-DD` or RFC3339) |
@@ -262,6 +271,8 @@ rimo note list --fields id,title,created_at
 rimo note list --page-size 50
 rimo note list --attended --page-size 50
 rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
+rimo note list --today
+rimo note list --week
 rimo note list --team J9yyjDQLJWqhiSTH0sAT --since 2026-06-01 --until 2026-07-01
 rimo note list --team J9yyjDQLJWqhiSTH0sAT --updated-since 2026-06-08
 ```

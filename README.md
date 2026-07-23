@@ -66,7 +66,8 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 - [コマンド](docs/ja/commands.md) — フラグと例を含む完全なリファレンス
 - [設定](docs/ja/configuration.md) — `config.yaml`、認証情報の保存、環境変数
 - [出力とエラー](docs/ja/output-and-errors.md) — JSON 設計、`--fields`/`--excludes`、終了コード
-- [MCP サーバー](docs/ja/mcp.md) — `rimo` を Claude Code、Codex、Cursor などの MCP クライアントに型付きツールとして公開
+- [MCP でできること](docs/ja/mcp.md) — AI アシスタントが Rimo ノートから何を調べて答えられるか
+- [コーディングツールで使う](docs/ja/setup-guide.md) — Claude Code、Codex CLI、Cursor、Claude Desktop で `rimo` MCP サーバーを接続する
 - [トラブルシューティング](docs/ja/troubleshooting.md) — インストール・ログイン・PATH のよくある問題
 
 ## AI エージェント
@@ -101,7 +102,11 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 - *「今週の Rimo のノートを要約して」*
 - *「Q3 リリースプランに関する Rimo のノートを探して」*
 
-Claude Code、Codex、Cursor など他の MCP クライアントの完全なセットアップについてはこちらを参照ください: [MCP サーバー](docs/ja/mcp.md)。
+Claude Code、Codex、Cursor など他の MCP クライアントの完全なセットアップについてはこちらを参照ください: [コーディングツールで使う](docs/ja/setup-guide.md)。
+
+### Claude Desktop（ワンクリック拡張機能）
+
+Claude Desktop は MCP サーバーを **拡張機能** として導入します。[最新リリース](https://github.com/rimo/cli/releases/latest) から `rimo.mcpb` をダウンロードし、**設定 → Extensions** にドロップするだけです。必要なものはすべて同梱されており、CLI のインストールも設定ファイルの編集も不要です。サインインは拡張機能の設定に[パーソナル API キー](docs/ja/personal-api-keys.md)を貼り付けるだけ（CLI ユーザーは空欄のままで `rimo auth login` のセッションを再利用できます）。詳細: [コーディングツールで使う → Claude Desktop](docs/ja/setup-guide.md#claude-desktopワンクリック拡張機能)。
 
 ### エージェント用スキル（シェルコマンドを実行できる任意のエージェント向け）
 

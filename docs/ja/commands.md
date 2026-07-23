@@ -221,8 +221,9 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 **構文**
 
 ```
-rimo note list [--attended] [--team <id>] [--since <date>] [--until <date>]
-               [--updated-since <date>] [--page-size <int>] [--page-token <string>]
+rimo note list [--attended] [--team <id>] [--today] [--week]
+               [--since <date>] [--until <date>] [--updated-since <date>]
+               [--page-size <int>] [--page-token <string>]
 ```
 
 **デフォルトモード。** 認証済みユーザーが作成したノートを一覧表示します。
@@ -237,6 +238,11 @@ rimo note list [--attended] [--team <id>] [--since <date>] [--until <date>]
 `--updated-since` は更新日時で絞り込むため、前回の取得以降に変更されたノートだけを取得したいときに便利です。
 日付は `YYYY-MM-DD`（JST として解釈）または RFC3339 形式で指定できます。`--until` はその日時を含みません。
 
+`--today` と `--week` は、よく使う `held_at` の範囲へのショートカットです。`--today` は
+今日開催されたノート、`--week` は直近 7 日間（今日とその前 6 日間）に開催されたノートを
+一覧表示します。いずれも JST で評価され、`--since`/`--until` を手動で指定した場合と完全に
+同じ動作になるため、`--since`/`--until`（および相互、`--attended`）とは併用できません。
+
 すべてのモードで `--page-size` と `--page-token` でページネーションできます。
 
 **フラグ**
@@ -245,6 +251,8 @@ rimo note list [--attended] [--team <id>] [--since <date>] [--until <date>]
 |------|------|---------|-------------|
 | `--attended` | bool | `false` | 参加したノートを一覧表示 |
 | `--team` | string | `""` | チームのメンバー全員のノートを一覧表示（チーム ID は `rimo team list`） |
+| `--today` | bool | `false` | 今日開催されたノートのショートカット（JST）。`--since`/`--until` と併用不可 |
+| `--week` | bool | `false` | 直近 7 日間に開催されたノートのショートカット（JST）。`--since`/`--until` と併用不可 |
 | `--since` | string | `""` | この日時以降に開催されたノートのみ（`YYYY-MM-DD` または RFC3339） |
 | `--until` | string | `""` | この日時より前に開催されたノートのみ（`YYYY-MM-DD` または RFC3339） |
 | `--updated-since` | string | `""` | この日時以降に更新されたノートのみ（`YYYY-MM-DD` または RFC3339） |
@@ -259,6 +267,8 @@ rimo note list --fields id,title,created_at
 rimo note list --page-size 50
 rimo note list --attended --page-size 50
 rimo note list --attended --page-size 50 --page-token "eyJpZCI6..."
+rimo note list --today
+rimo note list --week
 rimo note list --team J9yyjDQLJWqhiSTH0sAT --since 2026-06-01 --until 2026-07-01
 rimo note list --team J9yyjDQLJWqhiSTH0sAT --updated-since 2026-06-08
 ```
