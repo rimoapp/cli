@@ -43,6 +43,8 @@ All commands print JSON to stdout by default. ([Why, and the exceptions →](doc
 | [`rimo note get`](docs/en/commands.md#rimo-note-get)       | Get a note by ID (metadata, transcript, or document) |
 | [`rimo note search`](docs/en/commands.md#rimo-note-search) | Find notes by semantic similarity or keyword |
 | [`rimo note ask`](docs/en/commands.md#rimo-note-ask)       | Ask a question and get an AI-synthesised answer |
+| [`rimo note create`](docs/en/commands.md#rimo-note-create) | Create a note, optionally seeded with markdown (`notes:write`) |
+| [`rimo note append`](docs/en/commands.md#rimo-note-append) | Append or prepend a markdown section to a note's document (`notes:write`) |
 | [`rimo team list`](docs/en/commands.md#rimo-team-list)     | List teams in your organization |
 | [`rimo version`](docs/en/commands.md#rimo-version)         | Print the CLI version |
 | [`rimo upgrade`](docs/en/commands.md#rimo-upgrade)         | Self-upgrade to the latest release |

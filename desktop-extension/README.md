@@ -1,81 +1,51 @@
-# Rimo — Claude Desktop Extension (`.mcpb`)
+# Rimo — Claude Desktop 拡張機能（`.mcpb`）
 
-This directory is the source of truth for the **Rimo Claude Desktop extension**: a
-one-click bundle that wires the `rimo mcp` server into [Claude Desktop](https://claude.ai/download)
-without editing `claude_desktop_config.json` by hand.
+[English](README.en.md) | [日本語](README.md)
 
-| File | Role |
+このディレクトリは、**Rimo の Claude Desktop 拡張機能**のソースオブトゥルース（正）です。`claude_desktop_config.json` を手で編集することなく、`rimo mcp` サーバーを [Claude Desktop](https://claude.ai/download) にワンクリックで組み込むためのバンドルです。
+
+| ファイル | 役割 |
 |------|------|
-| `manifest.json` | Extension metadata + MCP server launch definition. **Single source of truth for the extension `version`.** |
-| `icon.png` | Extension icon shown in Claude Desktop (the Rimo brand mark, from the `rimo` GitHub org avatar). |
-| `icon-16.png`, `icon-32.png`, `icon-128.png` | Small variants (downscaled from `icon.png` via `sips`), listed in the manifest `icons` array so compact UI surfaces (e.g. the connectors menu) can pick an exact size. Claude Desktop still shows a letter avatar in some menus for local extensions — upstream [mcpb#154](https://github.com/modelcontextprotocol/mcpb/issues/154). |
-| `server/` | **Gitignored build output** — the bundled `rimo` binaries staged here right before packing (`make mcpb-server-binaries` locally; the release workflow copies the signed goreleaser outputs). |
-| `.mcpbignore` | Files kept out of the packed bundle. |
+| `manifest.json` | 拡張機能のメタデータ + MCP サーバーの起動定義。**拡張機能の `version` の唯一のソースオブトゥルース。** |
+| `icons/icon.png` | Claude Desktop に表示される拡張機能のアイコン（`rimo` GitHub org のアバターを元にした Rimo のブランドマーク）。 |
+| `icons/icon-16.png`, `icons/icon-32.png`, `icons/icon-128.png` | 小さいサイズ（`icons/icon.png` を `sips` で縮小したもの）。コンパクトな UI（コネクターメニューなど）が正確なサイズを選べるよう、manifest の `icons` 配列に列挙されています。ローカル拡張機能の場合、Claude Desktop は一部のメニューで頭文字アバターを表示することがあります — アップストリームの [mcpb#154](https://github.com/modelcontextprotocol/mcpb/issues/154) を参照。 |
+| `server/` | **Gitignore されたビルド成果物** — パック直前にここへ配置される `rimo` バイナリ（ローカルでは `make mcpb-server-binaries`、リリースワークフローでは署名済みの goreleaser 成果物をコピー）。 |
+| `.mcpbignore` | パックされたバンドルから除外するファイル。 |
 
-## Binary strategy — Option B (bundled binaries)
+## バイナリ戦略 — オプション B（バイナリ同梱）
 
-The bundle **embeds the `rimo` binaries**, so installing the extension requires no
-separate CLI install and no PATH configuration:
+このバンドルは **`rimo` バイナリを同梱**しているため、拡張機能のインストールに別途 CLI をインストールする必要も、PATH の設定も不要です。
 
-- `server/rimo` — macOS **universal** binary (Intel + Apple Silicon via
-  goreleaser `universal_binaries`/lipo), Developer ID **signed and notarized** by
-  the release pipeline. A fat binary is required because the manifest's
-  `platform_overrides` selects per **OS**, not per arch.
-- `server/rimo.exe` — Windows amd64 (runs on ARM Windows under emulation).
-  **Unsigned until #152** (Authenticode) — Claude Desktop launches it fine as a
-  child process, but signing remains the trust gap for directory submission.
-- Linux is not in `compatibility.platforms`: Claude Desktop does not ship for Linux.
+- `server/rimo` — macOS **ユニバーサル**バイナリ（goreleaser の `universal_binaries`/lipo による Intel + Apple Silicon）。リリースパイプラインで Developer ID による**署名と公証**が行われます。manifest の `platform_overrides` はアーキテクチャ単位ではなく **OS 単位**で選択するため、fat バイナリが必要です。
+- `server/rimo.exe` — Windows amd64（ARM Windows ではエミュレーションで動作）。**#152 まで未署名**（Authenticode）— Claude Desktop は子プロセスとして問題なく起動しますが、ディレクトリ登録に向けては署名が信頼上の課題として残っています。
+- Linux は `compatibility.platforms` に含まれていません。Claude Desktop は Linux 向けに提供されていないためです。
 
-The manifest launches `${__dirname}/server/rimo` (win32 override:
-`${__dirname}/server/rimo.exe`). There is no `rimo_path` user-config field —
-Option A (PATH-dependent launch of a separately installed CLI, shipped in v0.1.0)
-was replaced by this in v0.2.0 once macOS signing/notarization landed (#124).
+manifest は `${__dirname}/server/rimo` を起動します（win32 のオーバーライド: `${__dirname}/server/rimo.exe`）。`rimo_path` という user-config フィールドはありません — オプション A（別途インストールした CLI を PATH 依存で起動する方式。v0.1.0 で提供）は、macOS の署名/公証が実現した時点（#124）で v0.2.0 においてこの方式に置き換えられました。
 
-**Never parameterize `args` with `user_config` values.** `args` stays the
-hardcoded `["mcp"]`. Routing user config into `args` would widen the injection
-surface for no benefit — pass user config via `env` instead.
+**`args` を `user_config` の値でパラメータ化してはいけません。** `args` はハードコードされた `["mcp"]` のままにします。ユーザー設定を `args` に流し込むと、何のメリットもなくインジェクションの余地を広げてしまいます — ユーザー設定は `env` 経由で渡してください。
 
-## Auth — two paths
+## 認証 — 2 つの経路
 
-The manifest exposes an optional **`api_key`** user-config field (`sensitive: true`,
-so Claude Desktop masks the input and stores the value securely) that is injected
-into the server's environment as `RIMO_API_KEY` — already the CLI's top token
-resolution priority. A personal API key created in the Rimo web app therefore
-gives a fully terminal-free sign-in. Left blank, the value is empty and the CLI
-treats an empty `RIMO_API_KEY` as unset, falling back to the OS-keyring session
-from `rimo auth login` — so users who also have the CLI get zero-config auth.
-There is no in-extension OAuth sign-in; that would require the remote-transport
-work (#198).
+manifest は任意の **`api_key`** という user-config フィールド（`sensitive: true` なので Claude Desktop が入力をマスクし、値を安全に保存します）を公開しており、その値はサーバーの環境変数 `RIMO_API_KEY` として注入されます — これは CLI のトークン解決における最優先項目です。したがって、Rimo の Web アプリで作成した個人用 API キーを使えば、ターミナルを一切使わずにサインインできます。空欄のままにすると値は空になり、CLI は空の `RIMO_API_KEY` を未設定として扱い、`rimo auth login` による OS キーリングのセッションにフォールバックします — そのため CLI も併用しているユーザーは設定不要で認証できます。拡張機能内での OAuth サインインはありません。それにはリモートトランスポートの作業（#198）が必要になります。
 
-## Build
+## ビルド
 
-From the repo root:
+リポジトリのルートから:
 
 ```bash
-make mcpb-validate          # schema-check manifest.json
-make mcpb-server-binaries   # cross-build server/rimo (universal) + server/rimo.exe — macOS only (lipo)
-make mcpb-pack              # → dist/rimo.mcpb (fails fast if server/ binaries are missing)
+make mcpb-validate          # manifest.json をスキーマ検証
+make mcpb-server-binaries   # server/rimo（ユニバーサル）+ server/rimo.exe をクロスビルド — macOS のみ（lipo）
+make mcpb-pack              # → dist/rimo.mcpb（server/ のバイナリが無ければ即座に失敗）
 ```
 
-Locally built binaries are **unsigned** — fine for your own testing; Gatekeeper
-does not quarantine files you build yourself. The release pipeline packs the
-signed + notarized binaries instead.
+ローカルでビルドしたバイナリは**未署名**です — 自分でテストする分には問題ありません（自分でビルドしたファイルを Gatekeeper が隔離することはありません）。リリースパイプラインは、代わりに署名 + 公証済みのバイナリをパックします。
 
-Pack/validate shell out to the official `@anthropic-ai/mcpb` CLI via `npx`
-(Node required; version pinned in the Makefile). `dist/` and `server/` are
-gitignored; the `.mcpb` is a release artifact, not committed.
+パック/検証は、公式の `@anthropic-ai/mcpb` CLI を `npx` 経由で呼び出します（Node が必要。バージョンは Makefile に固定）。`dist/` と `server/` は gitignore されており、`.mcpb` はリリース成果物であってコミットはされません。
 
-## Release / versioning
+## リリース / バージョニング
 
-- Every stable release repacks the bundle with **that release's binaries** and
-  attaches `rimo.mcpb` + `rimo.mcpb.sha256` (the `Release` workflow copies the
-  signed goreleaser outputs into `server/` and runs `make mcpb-pack`). Users
-  update the bundled CLI by reinstalling the latest `rimo.mcpb`.
-- Bump the semver `version` in `manifest.json` when the **extension itself**
-  changes user-visibly (launch contract, settings fields, descriptions). The
-  bundled CLI version rides along with each release automatically and is *not*
-  a reason to bump.
-- The extension `version` is independent of the Claude Code plugin
-  (`../.claude-plugin/plugin.json`) and the `rimo` CLI release.
+- 安定版リリースのたびに、**そのリリースのバイナリ**でバンドルを再パックし、`rimo.mcpb` + `rimo.mcpb.sha256` を添付します（`Release` ワークフローが署名済みの goreleaser 成果物を `server/` にコピーし、`make mcpb-pack` を実行）。ユーザーは最新の `rimo.mcpb` を再インストールすることで、同梱の CLI を更新します。
+- **拡張機能そのもの**がユーザーに見える形で変わったとき（起動の契約、設定フィールド、説明文など）に、`manifest.json` の semver `version` を上げてください。同梱の CLI バージョンは各リリースに自動で追随するため、それ自体はバージョンを上げる理由にはなりません。
+- 拡張機能の `version` は、Claude Code プラグイン（`../.claude-plugin/plugin.json`）や `rimo` CLI のリリースとは独立しています。
 
-User-facing setup lives in [`../docs/en/mcp.md`](../docs/en/mcp.md#claude-desktop-one-click-extension).
+ユーザー向けのセットアップ手順は [`../docs/ja/mcp.md`](../docs/ja/mcp.md#claude-desktopワンクリック拡張機能) にあります。

@@ -43,6 +43,8 @@ rimo note ask "what did we decide on pricing?"   # ノートから AI が回答�
 | [`rimo note get`](docs/ja/commands.md#rimo-note-get)       | ID でノートを取得（メタデータ、文字起こし、ドキュメント） |
 | [`rimo note search`](docs/ja/commands.md#rimo-note-search) | 意味的類似度またはキーワードでノートを検索 |
 | [`rimo note ask`](docs/ja/commands.md#rimo-note-ask)       | 質問すると AI が統合した回答を返す |
+| [`rimo note create`](docs/ja/commands.md#rimo-note-create) | ノートを作成（マークダウンで初期化も可能。`notes:write`） |
+| [`rimo note append`](docs/ja/commands.md#rimo-note-append) | ノートのドキュメントにマークダウンのセクションを追記／先頭に挿入（`notes:write`） |
 | [`rimo team list`](docs/ja/commands.md#rimo-team-list)     | 組織内のチームを一覧表示 |
 | [`rimo version`](docs/ja/commands.md#rimo-version)         | CLI のバージョンを表示 |
 | [`rimo upgrade`](docs/ja/commands.md#rimo-upgrade)         | 最新リリースへ自己アップグレード |
