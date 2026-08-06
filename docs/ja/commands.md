@@ -214,6 +214,10 @@ rimo auth switch alice@rimo.app --org "Rimo Engineering"   # メール + 組織�
 - アクセスできないノートに対する `rimo note get` は、ノートの存在を明かさずに
   not-found エラーを返します。
 
+`rimo note create` と `rimo note append` は書き込み系で、`notes:write` スコープを
+持つトークンが必要です（`append` はさらにノートの編集権限が必要）。それ以外の note
+コマンドはすべて読み取り専用です。
+
 ### `rimo note list`
 
 ノートを一覧表示します。
@@ -456,6 +460,123 @@ rimo note ask "今週の議事録を要約して"
 **エラー**
 
 エラーの JSON 形式と終了コードについては [出力とエラー](output-and-errors.md) を参照してください。
+
+---
+
+### `rimo note create`
+
+録音を伴わない空のノートを作成します。編集用のドキュメントも同時に作成され、
+マークダウンを渡すとその初期コンテンツとして取り込まれます。
+
+`notes:write` スコープを持つトークンが必要です。
+
+**構文**
+
+```
+rimo note create [markdown] [flags]
+```
+
+初期マークダウンは位置引数か `--markdown-file`（`-` で標準入力）のどちらかで
+渡します（両方は指定できません）。省略すると空のノートを作成します。複数行を
+そのまま渡す場合は bash/zsh の `$'…'` 記法（`\n` が改行）を使い、長い内容は
+`--markdown-file` を推奨します。
+
+**フラグ**
+
+| フラグ | 型 | デフォルト | 説明 |
+|------|------|---------|-------------|
+| `--title` | string | 自動 | ノートのタイトル（省略時は日時から自動生成） |
+| `--team` | string | `""` | 作成先のチーム ID（`rimo team list` で取得）。省略時は個人のノート |
+| `--locale` | string | ユーザー設定 | ノートの言語設定（例: `ja-JP`） |
+| `--markdown-file` | string | `""` | 初期マークダウンをファイルから読み込む（`-` で標準入力） |
+
+**例**
+
+```bash
+rimo note create                                            # 空・自動タイトルのノート
+rimo note create --title "ブログ下書き"
+rimo note create --title "ブログ下書き" $'# はじめに\n本文はここに。'   # 複数行のマークダウン
+rimo note create --markdown-file draft.md --team team_abc123
+cat draft.md | rimo note create --markdown-file - --title "ブログ下書き"
+rimo note create --title "ブログ下書き" --dry-run           # プレビュー（作成しない）
+rimo note create --title "ブログ下書き" --fields id         # 新しい ID のみ
+```
+
+**出力（stdout、JSON）**
+
+```json
+{
+  "note": { "id": "note_abc123", "title": "ブログ下書き", "...": "..." },
+  "document": { "id": "doc_xyz789", "primary": true, "...": "..." }
+}
+```
+
+`rimo note append` はノート ID と**ドキュメント ID の両方**を取るので、両方を
+保持しておいてください。
+
+**エラー**
+
+リクエストボディが不正、`locale` が非対応、無効化されたチャンネルへの作成は `400`、
+指定したチームへの参加権限がない場合は `403` を返します。エラーの JSON 形式と終了
+コードについては [出力とエラー](output-and-errors.md) を参照してください。
+
+---
+
+### `rimo note append`
+
+ノートのドキュメントにマークダウンをセクションとして取り込みます。見出し・リスト等の
+構造は維持されます。既定では末尾に追記されます。
+
+ノートの編集権限と `notes:write` スコープを持つトークンが必要です。
+
+**構文**
+
+```
+rimo note append <note_id> <document_id> [markdown] [flags]
+```
+
+マークダウンは必須で、位置引数か `--markdown-file`（`-` で標準入力）のどちらかで
+渡します（両方は指定できません）。複数行をそのまま渡す場合は bash/zsh の `$'…'`
+記法（`\n` が改行）を使います。ドキュメント ID は
+`rimo note get <note_id> --list-documents` で確認できます。
+
+**フラグ**
+
+| フラグ | 型 | デフォルト | 説明 |
+|------|------|---------|-------------|
+| `--position` | string | `end` | 挿入位置: `end`（末尾に追記）または `start`（先頭に挿入） |
+| `--markdown-file` | string | `""` | マークダウンをファイルから読み込む（`-` で標準入力） |
+
+**例**
+
+```bash
+rimo note append note_abc123 doc_xyz789 $'## ネクストアクション\n- リリースノートを公開する'
+rimo note append note_abc123 doc_xyz789 --markdown-file section.md
+rimo note append note_abc123 doc_xyz789 --position start "## 概要"
+rimo note ask "what did we decide?" | rimo note append note_abc123 doc_xyz789 -
+rimo note append note_abc123 doc_xyz789 "## メモ" --dry-run
+```
+
+**出力（stdout、JSON）**
+
+```json
+{
+  "document": {
+    "id": "doc_xyz789",
+    "export_markdown": "# はじめに\n\n## ネクストアクション\n\n- リリースノートを公開する",
+    "...": "..."
+  }
+}
+```
+
+`export_markdown` は取り込み後のドキュメントを反映するので、反映内容を確認できます。
+
+**エラー**
+
+`markdown` が空、`--position` が不正な場合は `400`、編集権限がない場合は `403`、
+ノートまたはドキュメントが見つからない場合は `404`、ロックされている場合は `409` を
+返します。エラーの JSON 形式と終了コードについては
+[出力とエラー](output-and-errors.md) を参照してください。
 
 ---
 

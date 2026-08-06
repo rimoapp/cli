@@ -148,6 +148,7 @@ To shut off any key — for example, if it may be compromised or belongs to some
 | **"API Key" page or Create button is missing** | Your admin hasn't enabled the feature, or your account isn't allowed to create keys. Ask your administrator. |
 | **You've reached the API key limit** | You already hold the maximum number allowed. Deactivate an unused key, or ask your admin to raise the per-user limit. |
 | **The CLI reports an authentication error** | Check that `RIMO_API_KEY` is set correctly and the key hasn't **expired** or been **deactivated**. Run `rimo auth status` to see how the CLI is resolving credentials. |
+| **`rimo auth login` says the machine has no usable OS keyring** | Containers and headless Linux without a Secret Service have nowhere to keep a browser session, so `rimo auth login` cannot work there. Create a key as above and set `RIMO_API_KEY` — it needs no local storage. |
 | **You lost the key** | Keys can't be recovered after creation. Deactivate the old one and create a new key. |
 
 ## Security notes

@@ -215,6 +215,10 @@ What the note commands return depends on your access:
 - `rimo note get` on a note you cannot access returns a not-found error rather
   than revealing that the note exists.
 
+`rimo note create` and `rimo note append` write: they need a token with the
+`notes:write` scope (and, for `append`, edit access to the note). Every other
+note command is read-only.
+
 ### `rimo note list`
 
 List notes.
@@ -459,6 +463,122 @@ rimo note ask "今週の議事録を要約して"
 
 **Errors**
 
+See [Output & errors](output-and-errors.md) for the error JSON shape and exit code.
+
+---
+
+### `rimo note create`
+
+Create a note with no recording attached. A primary document is created alongside
+it for editing, optionally seeded with markdown.
+
+Requires a token with the `notes:write` scope.
+
+**Syntax**
+
+```
+rimo note create [markdown] [flags]
+```
+
+Pass the initial markdown as the positional argument, or via `--markdown-file`
+(`-` reads stdin) — not both. Omit it entirely to create an empty note. For
+multi-line markdown inline, use bash/zsh `$'…'` quoting (`\n` = newline);
+for anything longer, prefer `--markdown-file`.
+
+**Flags**
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--title` | string | auto | Note title (defaults to an auto-generated timestamp title) |
+| `--team` | string | `""` | Create the note under this team (ID from `rimo team list`); defaults to a personal note |
+| `--locale` | string | your setting | Note locale, e.g. `ja-JP` |
+| `--markdown-file` | string | `""` | Read the initial markdown from a file (`-` for stdin) |
+
+**Examples**
+
+```bash
+rimo note create                                            # empty, auto-titled note
+rimo note create --title "Blog draft"
+rimo note create --title "Blog draft" $'# Intro\nNotes go here.'   # multi-line markdown
+rimo note create --markdown-file draft.md --team team_abc123
+cat draft.md | rimo note create --markdown-file - --title "Blog draft"
+rimo note create --title "Blog draft" --dry-run             # preview, no note created
+rimo note create --title "Blog draft" --fields id           # just the new IDs
+```
+
+**Output (stdout, JSON)**
+
+```json
+{
+  "note": { "id": "note_abc123", "title": "Blog draft", "...": "..." },
+  "document": { "id": "doc_xyz789", "primary": true, "...": "..." }
+}
+```
+
+Keep both IDs — `rimo note append` takes the note ID *and* the document ID.
+
+**Errors**
+
+`400` for a malformed body, an unsupported `locale`, or a disabled channel; `403`
+if you are not a member of the given team. See
+[Output & errors](output-and-errors.md) for the error JSON shape and exit code.
+
+---
+
+### `rimo note append`
+
+Merge markdown into a note's document as a new section, preserving heading and
+list structure. Appends to the end by default.
+
+Requires edit access to the note and a token with the `notes:write` scope.
+
+**Syntax**
+
+```
+rimo note append <note_id> <document_id> [markdown] [flags]
+```
+
+The markdown is required — pass it as the positional argument or via
+`--markdown-file` (`-` reads stdin), not both. For multi-line markdown inline,
+use bash/zsh `$'…'` quoting (`\n` = newline). Find a note's document IDs with
+`rimo note get <note_id> --list-documents`.
+
+**Flags**
+
+| Flag | Type | Default | Description |
+|------|------|---------|-------------|
+| `--position` | string | `end` | Insertion position: `end` (append) or `start` (prepend) |
+| `--markdown-file` | string | `""` | Read the markdown from a file (`-` for stdin) |
+
+**Examples**
+
+```bash
+rimo note append note_abc123 doc_xyz789 $'## Action items\n- Ship the release notes'
+rimo note append note_abc123 doc_xyz789 --markdown-file section.md
+rimo note append note_abc123 doc_xyz789 --position start "## Summary"
+rimo note ask "what did we decide?" | rimo note append note_abc123 doc_xyz789 -
+rimo note append note_abc123 doc_xyz789 "## Notes" --dry-run
+```
+
+**Output (stdout, JSON)**
+
+```json
+{
+  "document": {
+    "id": "doc_xyz789",
+    "export_markdown": "# Intro\n\n## Action items\n\n- Ship the release notes",
+    "...": "..."
+  }
+}
+```
+
+`export_markdown` reflects the document after the merge, so you can confirm what
+landed.
+
+**Errors**
+
+`400` for empty markdown or an invalid `--position`; `403` without edit access;
+`404` for an unknown note or document; `409` if the note or document is locked.
 See [Output & errors](output-and-errors.md) for the error JSON shape and exit code.
 
 ---

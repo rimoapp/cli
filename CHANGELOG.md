@@ -3,6 +3,28 @@
 All notable changes to the Rimo CLI are documented here. This project follows
 [Semantic Versioning](https://semver.org/).
 
+## v1.3.0
+
+### Added
+
+- `rimo note create` — create a note from the CLI, with an editable document
+  created alongside it. Seed it with markdown from an argument, a file, or
+  standard input, and set the title, team, and locale. Needs a token that is
+  allowed to write notes.
+- `rimo note append` — merge markdown into a note's document as a new section,
+  either at the end or at the start. Heading and list structure is preserved.
+
+### Fixed
+
+- `rimo auth login` now tells you how to authenticate with a personal API key
+  when your system has no usable keyring (for example a container or a headless
+  Linux machine), instead of failing with an unclear error.
+
+### Changed
+
+- The Claude Code plugin's bundled skill now covers the two write commands —
+  run `/plugin update rimo` to pick it up.
+
 ## v1.2.2
 
 ### Added

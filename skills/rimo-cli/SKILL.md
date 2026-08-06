@@ -1,6 +1,6 @@
 ---
 name: rimo-cli
-description: Use the `rimo` CLI to interact with the Rimo Voice platform — list/read/search meeting notes, transcripts, and documents, and ask AI questions across them. Trigger when the user mentions Rimo, asks about meeting notes/minutes/transcripts/documents stored in Rimo, or invokes `rimo` directly.
+description: Use the `rimo` CLI to interact with the Rimo Voice platform — list/read/search meeting notes, transcripts, and documents, ask AI questions across them, and create notes or append markdown sections to them. Trigger when the user mentions Rimo, asks about meeting notes/minutes/transcripts/documents stored in Rimo, or invokes `rimo` directly.
 ---
 
 # rimo CLI Skill
@@ -280,6 +280,42 @@ Inline `[xxxxx]` chunk-ref citations the model emits are stripped from the visib
 - `rimo note search` — when the user would open the returned notes one by one and read them.
 - `rimo note ask` — when the user wants a *single answer* extracted from across notes.
 
+### `rimo note create` — writes
+
+Creates a note with no recording attached, plus a primary document for editing. **Only run this when the user explicitly asks to create a note.** Requires a token with the `notes:write` scope.
+
+```bash
+rimo note create                                          # empty, auto-titled note
+rimo note create --title "Blog draft" "# Intro"           # seeded with markdown
+rimo note create --markdown-file draft.md --team team_abc  # from a file, in a team
+cat draft.md | rimo note create --markdown-file -          # from stdin
+rimo note create --title "Blog draft" --dry-run            # preview, creates nothing
+```
+
+- Markdown comes from the positional argument **or** `--markdown-file` (`-` = stdin), never both. Omit it for an empty note.
+- Other flags: `--title` (defaults to a timestamp), `--team` (ID from `rimo team list`; omit for a personal note), `--locale` (e.g. `ja-JP`).
+- Response shape: `{ "note": {...}, "document": {...} }`. **Keep both IDs** — `rimo note append` needs the note ID *and* the document ID.
+- Errors: `400` (bad body, unsupported `locale`, disabled channel), `403` (not a member of that team).
+
+### `rimo note append` — writes
+
+Merges markdown into an existing note's document as a new section, preserving heading and list structure. **Only run this when the user explicitly asks to add content to a note.** Requires edit access to the note and the `notes:write` scope.
+
+```bash
+rimo note append <note_id> <document_id> $'## Action items\n- Ship the release notes'
+rimo note append <note_id> <document_id> --markdown-file section.md
+rimo note append <note_id> <document_id> --position start "## Summary"   # prepend
+rimo note append <note_id> <document_id> "## Notes" --dry-run            # preview
+```
+
+- The markdown is **required** — positional argument or `--markdown-file` (`-` = stdin), not both.
+- Get the document ID from `rimo note get <note_id> --list-documents` (or from `note create`'s output).
+- `--position` is `end` (append, the default) or `start` (prepend).
+- Response shape: `{ "document": {...} }` — check `export_markdown` to confirm what landed.
+- Errors: `400` (empty markdown, bad `--position`), `403` (no edit access), `404` (unknown note/document), `409` (note or document locked).
+
+Both write commands support `--dry-run`, which returns a mocked response and sends no request. Use it to show the user what would happen when you're unsure.
+
 ### `rimo version` / `rimo upgrade`
 
 Plain text. `rimo upgrade` downloads the latest release over HTTPS and verifies its checksum before replacing the binary — no GitHub login or extra tooling is required, and there is no flag to pin or downgrade. Do not run `rimo upgrade` autonomously — let the user trigger it.
@@ -312,7 +348,7 @@ The following commands are planned but not yet available — support is under ac
 |--------------|---------------------------------------------------------------------------|
 | `--fields`   | `""` (all), `"compact"` (long strings → `"[omitted]"`), or `"f1,f2,..."` |
 | `--excludes` | Drop noisy fields (e.g. `transcript,document_markdown`) — applied after `--fields` |
-| `--dry-run`  | Simulate a write — currently no write commands are implemented, so this is mainly future-proofing |
+| `--dry-run`  | Simulate a write (`note create`, `note append`) — returns a mocked response, sends no request |
 | `--account`  | Override default account                                                  |
 
 ```bash
@@ -388,6 +424,7 @@ rimo note ask "<question>"
 - ❌ Don't ignore the exit code. JSON on stdout + nonzero exit = error, not data.
 - ❌ Don't pipe `--transcript` / `--document` / `--full` / `--meeting-chat` / `--document-id` / `note ask` / `version` / `upgrade` into `jq` — those are plain text on stdout.
 - ❌ Don't try `--yes` or any confirmation-skip flag — they don't exist. Safety is enforced via token scopes.
+- ❌ Don't create or modify notes on your own. `rimo note create` and `rimo note append` write to the user's workspace — run them only on an explicit request, and prefer `--dry-run` first when the target is ambiguous.
 - ❌ Don't run `rimo upgrade` on your own — let the user decide when to update.
 - ❌ Don't pass relative dates ("last week", "yesterday") to `jq` filters or CLI flags — convert to absolute `YYYY-MM-DD` first.
 
